@@ -50,7 +50,7 @@
         }
         
         /* Layout */
-        .app {
+        #app {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -382,6 +382,11 @@
             border-color: var(--primary-color);
         }
         
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
         /* Footer */
         .footer {
             background: var(--dark-color);
@@ -548,18 +553,32 @@
             .section-title h2 {
                 font-size: 2rem;
             }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="app"></div>
+    <div id="app">
+        <!-- Content will be rendered here -->
+    </div>
 
     <script>
         // ============================================
-        // APPLICATION CORE
+        // APPLICATION STATE & ROUTER
         // ============================================
         
-        // Global state
+        // Global application state
         const AppState = {
             currentPage: 'home',
             portfolioFilter: 'all',
@@ -635,38 +654,24 @@
             ]
         };
 
-        // Router
+        // Simple Router Class
         class Router {
             constructor() {
                 this.routes = {};
-                this.init();
+                this.currentRoute = 'home';
             }
-
-            init() {
-                // Load saved data
-                this.loadData();
-                
-                // Handle initial route
-                this.navigate('home', false);
+            
+            register(route, component) {
+                this.routes[route] = component;
             }
-
-            navigate(page, updateHistory = true) {
-                if (this.routes[page]) {
-                    AppState.currentPage = page;
-                    
-                    if (updateHistory) {
-                        // Update URL without hash
-                        window.history.pushState({ page }, '', '/');
-                    }
-                    
+            
+            navigate(route) {
+                if (this.routes[route]) {
+                    AppState.currentPage = route;
                     this.render();
                 }
             }
-
-            register(page, component) {
-                this.routes[page] = component;
-            }
-
+            
             render() {
                 const app = document.getElementById('app');
                 const component = this.routes[AppState.currentPage];
@@ -676,30 +681,17 @@
                     component.mounted();
                 }
             }
-
-            loadData() {
-                const contacts = localStorage.getItem('indiz_contacts');
-                const newsletter = localStorage.getItem('indiz_newsletter');
-                
-                if (contacts) AppState.contactSubmissions = JSON.parse(contacts);
-                if (newsletter) AppState.newsletterSubscribers = JSON.parse(newsletter);
-            }
-
-            saveData() {
-                localStorage.setItem('indiz_contacts', JSON.stringify(AppState.contactSubmissions));
-                localStorage.setItem('indiz_newsletter', JSON.stringify(AppState.newsletterSubscribers));
-            }
         }
 
         // Create router instance
         const router = new Router();
 
-        // Toast system
+        // Toast Notification System
         class Toast {
             static show(message, type = 'success') {
                 // Remove existing toast
-                const existing = document.querySelector('.toast');
-                if (existing) existing.remove();
+                const existingToast = document.querySelector('.toast');
+                if (existingToast) existingToast.remove();
                 
                 const toast = document.createElement('div');
                 toast.className = `toast toast-${type}`;
@@ -708,14 +700,14 @@
                         <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
                     </div>
                     <div>
-                        <h4 style="margin-bottom: 5px;">${type === 'success' ? 'Success!' : 'Error!'}</h4>
-                        <p style="color: var(--gray-color);">${message}</p>
+                        <h4 style="margin-bottom: 5px; color: var(--dark-color);">${type === 'success' ? 'Success!' : 'Error!'}</h4>
+                        <p style="color: var(--gray-color); font-size: 0.9rem;">${message}</p>
                     </div>
                 `;
                 
                 document.body.appendChild(toast);
                 
-                // Auto remove
+                // Auto remove after 3 seconds
                 setTimeout(() => {
                     toast.style.opacity = '0';
                     toast.style.transform = 'translateX(100%)';
@@ -736,18 +728,18 @@
                     <header class="header">
                         <div class="container">
                             <div class="header-content">
-                                <div class="logo" onclick="router.navigate('home')">
+                                <div class="logo" id="logoBtn">
                                     <i class="fas fa-code"></i>
                                     <span>Indiz Software</span>
                                 </div>
                                 
                                 <nav class="nav">
-                                    <button class="nav-link ${current === 'home' ? 'active' : ''}" onclick="router.navigate('home')">Home</button>
-                                    <button class="nav-link ${current === 'about' ? 'active' : ''}" onclick="router.navigate('about')">About</button>
-                                    <button class="nav-link ${current === 'services' ? 'active' : ''}" onclick="router.navigate('services')">Services</button>
-                                    <button class="nav-link ${current === 'technologies' ? 'active' : ''}" onclick="router.navigate('technologies')">Technologies</button>
-                                    <button class="nav-link ${current === 'portfolio' ? 'active' : ''}" onclick="router.navigate('portfolio')">Portfolio</button>
-                                    <button class="nav-link ${current === 'contact' ? 'active' : ''}" onclick="router.navigate('contact')">Contact</button>
+                                    <button class="nav-link ${current === 'home' ? 'active' : ''}" data-route="home">Home</button>
+                                    <button class="nav-link ${current === 'about' ? 'active' : ''}" data-route="about">About</button>
+                                    <button class="nav-link ${current === 'services' ? 'active' : ''}" data-route="services">Services</button>
+                                    <button class="nav-link ${current === 'technologies' ? 'active' : ''}" data-route="technologies">Technologies</button>
+                                    <button class="nav-link ${current === 'portfolio' ? 'active' : ''}" data-route="portfolio">Portfolio</button>
+                                    <button class="nav-link ${current === 'contact' ? 'active' : ''}" data-route="contact">Contact</button>
                                 </nav>
                                 
                                 <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -758,34 +750,61 @@
                     </header>
                 `;
             }
-
+            
             static mounted() {
+                // Logo click
+                document.getElementById('logoBtn')?.addEventListener('click', () => {
+                    router.navigate('home');
+                });
+                
+                // Navigation links
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        const route = e.target.getAttribute('data-route');
+                        if (route) router.navigate(route);
+                    });
+                });
+                
                 // Mobile menu
-                const btn = document.getElementById('mobileMenuBtn');
-                if (btn) {
-                    btn.addEventListener('click', () => {
-                        const menu = document.querySelector('.mobile-menu') || (() => {
+                const mobileBtn = document.getElementById('mobileMenuBtn');
+                if (mobileBtn) {
+                    mobileBtn.addEventListener('click', () => {
+                        const mobileMenu = document.querySelector('.mobile-menu');
+                        if (!mobileMenu) {
                             const menu = document.createElement('div');
                             menu.className = 'mobile-menu';
                             menu.innerHTML = `
                                 <nav class="mobile-nav">
-                                    <button class="mobile-nav-link ${AppState.currentPage === 'home' ? 'active' : ''}" onclick="router.navigate('home')">Home</button>
-                                    <button class="mobile-nav-link ${AppState.currentPage === 'about' ? 'active' : ''}" onclick="router.navigate('about')">About</button>
-                                    <button class="mobile-nav-link ${AppState.currentPage === 'services' ? 'active' : ''}" onclick="router.navigate('services')">Services</button>
-                                    <button class="mobile-nav-link ${AppState.currentPage === 'technologies' ? 'active' : ''}" onclick="router.navigate('technologies')">Technologies</button>
-                                    <button class="mobile-nav-link ${AppState.currentPage === 'portfolio' ? 'active' : ''}" onclick="router.navigate('portfolio')">Portfolio</button>
-                                    <button class="mobile-nav-link ${AppState.currentPage === 'contact' ? 'active' : ''}" onclick="router.navigate('contact')">Contact</button>
+                                    <button class="mobile-nav-link ${AppState.currentPage === 'home' ? 'active' : ''}" data-route="home">Home</button>
+                                    <button class="mobile-nav-link ${AppState.currentPage === 'about' ? 'active' : ''}" data-route="about">About</button>
+                                    <button class="mobile-nav-link ${AppState.currentPage === 'services' ? 'active' : ''}" data-route="services">Services</button>
+                                    <button class="mobile-nav-link ${AppState.currentPage === 'technologies' ? 'active' : ''}" data-route="technologies">Technologies</button>
+                                    <button class="mobile-nav-link ${AppState.currentPage === 'portfolio' ? 'active' : ''}" data-route="portfolio">Portfolio</button>
+                                    <button class="mobile-nav-link ${AppState.currentPage === 'contact' ? 'active' : ''}" data-route="contact">Contact</button>
                                 </nav>
                             `;
                             document.body.appendChild(menu);
-                            return menu;
-                        })();
+                            
+                            // Add click handlers for mobile links
+                            setTimeout(() => {
+                                menu.querySelectorAll('.mobile-nav-link').forEach(link => {
+                                    link.addEventListener('click', (e) => {
+                                        const route = e.target.getAttribute('data-route');
+                                        if (route) {
+                                            router.navigate(route);
+                                            menu.classList.remove('active');
+                                        }
+                                    });
+                                });
+                            }, 10);
+                        }
                         
+                        const menu = document.querySelector('.mobile-menu');
                         menu.classList.toggle('active');
                         
                         // Close menu when clicking outside
                         const closeMenu = (e) => {
-                            if (!menu.contains(e.target) && e.target !== btn) {
+                            if (!menu.contains(e.target) && e.target !== mobileBtn) {
                                 menu.classList.remove('active');
                                 document.removeEventListener('click', closeMenu);
                             }
@@ -814,22 +833,22 @@
                                 <div>
                                     <h3 style="margin-bottom: 20px;">Quick Links</h3>
                                     <ul class="footer-links">
-                                        <li><button onclick="router.navigate('home')">Home</button></li>
-                                        <li><button onclick="router.navigate('about')">About Us</button></li>
-                                        <li><button onclick="router.navigate('services')">Services</button></li>
-                                        <li><button onclick="router.navigate('technologies')">Technologies</button></li>
-                                        <li><button onclick="router.navigate('portfolio')">Portfolio</button></li>
+                                        <li><button data-route="home">Home</button></li>
+                                        <li><button data-route="about">About Us</button></li>
+                                        <li><button data-route="services">Services</button></li>
+                                        <li><button data-route="technologies">Technologies</button></li>
+                                        <li><button data-route="portfolio">Portfolio</button></li>
                                     </ul>
                                 </div>
                                 
                                 <div>
                                     <h3 style="margin-bottom: 20px;">Services</h3>
                                     <ul class="footer-links">
-                                        <li><button onclick="router.navigate('services')">Website Development</button></li>
-                                        <li><button onclick="router.navigate('services')">E-commerce Solutions</button></li>
-                                        <li><button onclick="router.navigate('services')">Inventory Management</button></li>
-                                        <li><button onclick="router.navigate('services')">POS Systems</button></li>
-                                        <li><button onclick="router.navigate('services')">CRM Solutions</button></li>
+                                        <li><button data-route="services">Website Development</button></li>
+                                        <li><button data-route="services">E-commerce Solutions</button></li>
+                                        <li><button data-route="services">Inventory Management</button></li>
+                                        <li><button data-route="services">POS Systems</button></li>
+                                        <li><button data-route="services">CRM Solutions</button></li>
                                     </ul>
                                 </div>
                                 
@@ -858,8 +877,16 @@
                     </footer>
                 `;
             }
-
-            static mounted() {}
+            
+            static mounted() {
+                // Footer navigation links
+                document.querySelectorAll('.footer-links button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const route = e.target.getAttribute('data-route');
+                        if (route) router.navigate(route);
+                    });
+                });
+            }
         }
 
         // ============================================
@@ -878,11 +905,11 @@
                                     <h1>Transform Your Business with Cutting-Edge Software Solutions</h1>
                                     <p>We deliver innovative web and software development services that drive growth, enhance productivity, and streamline operations for businesses worldwide.</p>
                                     <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                                        <button class="btn btn-primary" onclick="router.navigate('contact')">
+                                        <button class="btn btn-primary" id="getInTouchBtn">
                                             <i class="fas fa-paper-plane"></i>
                                             Get In Touch
                                         </button>
-                                        <button class="btn btn-outline" onclick="router.navigate('portfolio')">
+                                        <button class="btn btn-outline" id="viewOurWorkBtn">
                                             <i class="fas fa-eye"></i>
                                             View Our Work
                                         </button>
@@ -926,10 +953,19 @@
                     </div>
                 `;
             }
-
+            
             static mounted() {
                 Header.mounted();
                 Footer.mounted();
+                
+                // Button handlers
+                document.getElementById('getInTouchBtn')?.addEventListener('click', () => {
+                    router.navigate('contact');
+                });
+                
+                document.getElementById('viewOurWorkBtn')?.addEventListener('click', () => {
+                    router.navigate('portfolio');
+                });
             }
         }
 
@@ -997,7 +1033,7 @@
                                                     <span>indizsoftwaresolution.in</span>
                                                 </div>
                                             </div>
-                                            <button class="btn" style="margin-top: 30px; background: white; color: var(--primary-color);" onclick="router.navigate('contact')">
+                                            <button class="btn" style="margin-top: 30px; background: white; color: var(--primary-color);" id="contactNowBtn">
                                                 <i class="fas fa-paper-plane"></i>
                                                 Contact Now
                                             </button>
@@ -1010,10 +1046,15 @@
                     </div>
                 `;
             }
-
+            
             static mounted() {
                 Header.mounted();
                 Footer.mounted();
+                
+                // Contact Now button
+                document.getElementById('contactNowBtn')?.addEventListener('click', () => {
+                    router.navigate('contact');
+                });
             }
         }
 
@@ -1038,7 +1079,7 @@
                                             </div>
                                             <h3>Website Development</h3>
                                             <p>Custom websites with responsive design, SEO optimization, and CMS integration.</p>
-                                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="router.navigate('contact')">
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
                                                 Get Quote
                                             </button>
                                         </div>
@@ -1048,7 +1089,7 @@
                                             </div>
                                             <h3>E-commerce Solutions</h3>
                                             <p>Complete online stores with payment gateways and inventory management.</p>
-                                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="router.navigate('contact')">
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
                                                 Get Quote
                                             </button>
                                         </div>
@@ -1058,7 +1099,7 @@
                                             </div>
                                             <h3>Inventory Management</h3>
                                             <p>Real-time inventory tracking with alerts and reporting capabilities.</p>
-                                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="router.navigate('contact')">
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
                                                 Get Quote
                                             </button>
                                         </div>
@@ -1068,7 +1109,7 @@
                                             </div>
                                             <h3>POS Systems</h3>
                                             <p>Point of Sale systems for retail and restaurant businesses.</p>
-                                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="router.navigate('contact')">
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
                                                 Get Quote
                                             </button>
                                         </div>
@@ -1078,7 +1119,7 @@
                                             </div>
                                             <h3>CRM Solutions</h3>
                                             <p>Customer relationship management with lead tracking and analytics.</p>
-                                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="router.navigate('contact')">
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
                                                 Get Quote
                                             </button>
                                         </div>
@@ -1088,7 +1129,7 @@
                                             </div>
                                             <h3>Custom Applications</h3>
                                             <p>Tailored software solutions for specific business needs.</p>
-                                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="router.navigate('contact')">
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
                                                 Get Quote
                                             </button>
                                         </div>
@@ -1100,10 +1141,17 @@
                     </div>
                 `;
             }
-
+            
             static mounted() {
                 Header.mounted();
                 Footer.mounted();
+                
+                // Get Quote buttons
+                document.querySelectorAll('[data-route="contact"]').forEach(button => {
+                    button.addEventListener('click', () => {
+                        router.navigate('contact');
+                    });
+                });
             }
         }
 
@@ -1157,7 +1205,7 @@
                                     </div>
                                     
                                     <div style="text-align: center;">
-                                        <button class="btn btn-primary" onclick="router.navigate('contact')">
+                                        <button class="btn btn-primary" id="scheduleConsultationBtn">
                                             <i class="fas fa-calendar-alt"></i>
                                             Schedule Technical Consultation
                                         </button>
@@ -1169,10 +1217,15 @@
                     </div>
                 `;
             }
-
+            
             static mounted() {
                 Header.mounted();
                 Footer.mounted();
+                
+                // Consultation button
+                document.getElementById('scheduleConsultationBtn')?.addEventListener('click', () => {
+                    router.navigate('contact');
+                });
             }
         }
 
@@ -1195,13 +1248,13 @@
                                     </div>
                                     
                                     <div class="portfolio-filter">
-                                        <button class="filter-btn ${AppState.portfolioFilter === 'all' ? 'active' : ''}" onclick="PortfolioPage.setFilter('all')">All</button>
-                                        <button class="filter-btn ${AppState.portfolioFilter === 'web' ? 'active' : ''}" onclick="PortfolioPage.setFilter('web')">Web</button>
-                                        <button class="filter-btn ${AppState.portfolioFilter === 'ecommerce' ? 'active' : ''}" onclick="PortfolioPage.setFilter('ecommerce')">E-commerce</button>
-                                        <button class="filter-btn ${AppState.portfolioFilter === 'pos' ? 'active' : ''}" onclick="PortfolioPage.setFilter('pos')">POS</button>
-                                        <button class="filter-btn ${AppState.portfolioFilter === 'inventory' ? 'active' : ''}" onclick="PortfolioPage.setFilter('inventory')">Inventory</button>
-                                        <button class="filter-btn ${AppState.portfolioFilter === 'crm' ? 'active' : ''}" onclick="PortfolioPage.setFilter('crm')">CRM</button>
-                                        <button class="filter-btn ${AppState.portfolioFilter === 'custom' ? 'active' : ''}" onclick="PortfolioPage.setFilter('custom')">Custom</button>
+                                        <button class="filter-btn ${AppState.portfolioFilter === 'all' ? 'active' : ''}" data-filter="all">All</button>
+                                        <button class="filter-btn ${AppState.portfolioFilter === 'web' ? 'active' : ''}" data-filter="web">Web</button>
+                                        <button class="filter-btn ${AppState.portfolioFilter === 'ecommerce' ? 'active' : ''}" data-filter="ecommerce">E-commerce</button>
+                                        <button class="filter-btn ${AppState.portfolioFilter === 'pos' ? 'active' : ''}" data-filter="pos">POS</button>
+                                        <button class="filter-btn ${AppState.portfolioFilter === 'inventory' ? 'active' : ''}" data-filter="inventory">Inventory</button>
+                                        <button class="filter-btn ${AppState.portfolioFilter === 'crm' ? 'active' : ''}" data-filter="crm">CRM</button>
+                                        <button class="filter-btn ${AppState.portfolioFilter === 'custom' ? 'active' : ''}" data-filter="custom">Custom</button>
                                     </div>
                                     
                                     <div class="portfolio-grid">
@@ -1218,7 +1271,7 @@
                                                             <span style="background: var(--light-color); color: var(--primary-color); padding: 5px 10px; border-radius: 20px; font-size: 0.85rem;">${tech}</span>
                                                         `).join('')}
                                                     </div>
-                                                    <button class="btn btn-primary" style="width: 100%;" onclick="PortfolioPage.showProject(${project.id})">
+                                                    <button class="btn btn-primary" style="width: 100%;" data-project="${project.id}">
                                                         <i class="fas fa-eye"></i>
                                                         View Details
                                                     </button>
@@ -1228,7 +1281,7 @@
                                     </div>
                                     
                                     <div style="text-align: center; margin-top: 50px;">
-                                        <button class="btn btn-primary" onclick="router.navigate('contact')">
+                                        <button class="btn btn-primary" id="similarProjectBtn">
                                             <i class="fas fa-lightbulb"></i>
                                             Have a Similar Project?
                                         </button>
@@ -1240,21 +1293,38 @@
                     </div>
                 `;
             }
-
+            
             static mounted() {
                 Header.mounted();
                 Footer.mounted();
+                
+                // Filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const filter = e.target.getAttribute('data-filter');
+                        AppState.portfolioFilter = filter;
+                        router.render();
+                    });
+                });
+                
+                // View Details buttons
+                document.querySelectorAll('[data-project]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const projectId = parseInt(e.target.getAttribute('data-project'));
+                        PortfolioPage.showProjectModal(projectId);
+                    });
+                });
+                
+                // Similar Project button
+                document.getElementById('similarProjectBtn')?.addEventListener('click', () => {
+                    router.navigate('contact');
+                });
             }
-
-            static setFilter(filter) {
-                AppState.portfolioFilter = filter;
-                router.render();
-            }
-
-            static showProject(id) {
-                const project = AppState.portfolioData.find(p => p.id === id);
+            
+            static showProjectModal(projectId) {
+                const project = AppState.portfolioData.find(p => p.id === projectId);
                 if (!project) return;
-
+                
                 const modal = document.createElement('div');
                 modal.style.cssText = `
                     position: fixed;
@@ -1274,7 +1344,7 @@
                     <div style="background: white; border-radius: var(--border-radius); max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto;">
                         <div style="padding: 30px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
                             <h3 style="margin: 0;">${project.title}</h3>
-                            <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">
+                            <button id="closeModalBtn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray-color);">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -1297,7 +1367,7 @@
                                     ${project.features.map(f => `<li style="margin-bottom: 5px;">${f}</li>`).join('')}
                                 </ul>
                             </div>
-                            <button class="btn btn-primary" style="width: 100%;" onclick="router.navigate('contact')">
+                            <button class="btn btn-primary" style="width: 100%;" id="startSimilarProjectBtn">
                                 <i class="fas fa-paper-plane"></i>
                                 Start Similar Project
                             </button>
@@ -1307,19 +1377,32 @@
                 
                 document.body.appendChild(modal);
                 
-                // Close on escape
-                const closeModal = (e) => {
-                    if (e.key === 'Escape') modal.remove();
-                };
-                document.addEventListener('keydown', closeModal);
+                // Close button
+                document.getElementById('closeModalBtn')?.addEventListener('click', () => {
+                    modal.remove();
+                });
                 
-                // Remove listener when modal closes
+                // Start Similar Project button
+                document.getElementById('startSimilarProjectBtn')?.addEventListener('click', () => {
+                    modal.remove();
+                    router.navigate('contact');
+                });
+                
+                // Close on background click
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
                         modal.remove();
-                        document.removeEventListener('keydown', closeModal);
                     }
                 });
+                
+                // Close on escape key
+                const handleEscape = (e) => {
+                    if (e.key === 'Escape') {
+                        modal.remove();
+                        document.removeEventListener('keydown', handleEscape);
+                    }
+                };
+                document.addEventListener('keydown', handleEscape);
             }
         }
 
@@ -1382,11 +1465,11 @@
                                             </div>
                                             
                                             <div style="margin-top: 40px;">
-                                                <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="window.open('tel:+917526018014')">
+                                                <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" id="callNowBtn">
                                                     <i class="fas fa-phone"></i>
                                                     Call Now
                                                 </button>
-                                                <button class="btn btn-primary" style="width: 100%;" onclick="window.open('mailto:indizsoftwaresolution@gmail.com')">
+                                                <button class="btn btn-primary" style="width: 100%;" id="sendEmailBtn">
                                                     <i class="fas fa-envelope"></i>
                                                     Send Email
                                                 </button>
@@ -1443,10 +1526,20 @@
                     </div>
                 `;
             }
-
+            
             static mounted() {
                 Header.mounted();
                 Footer.mounted();
+                
+                // Call Now button
+                document.getElementById('callNowBtn')?.addEventListener('click', () => {
+                    window.open('tel:+917526018014');
+                });
+                
+                // Send Email button
+                document.getElementById('sendEmailBtn')?.addEventListener('click', () => {
+                    window.open('mailto:indizsoftwaresolution@gmail.com');
+                });
                 
                 // Contact form submission
                 const form = document.getElementById('contactForm');
@@ -1471,20 +1564,19 @@
                             return;
                         }
                         
-                        // Save submission
-                        const submission = {
+                        // Save to localStorage
+                        const submissions = JSON.parse(localStorage.getItem('indiz_contacts') || '[]');
+                        submissions.push({
                             name,
                             email,
                             phone,
                             service,
                             message,
                             date: new Date().toISOString()
-                        };
+                        });
+                        localStorage.setItem('indiz_contacts', JSON.stringify(submissions));
                         
-                        AppState.contactSubmissions.push(submission);
-                        router.saveData();
-                        
-                        // Show success
+                        // Show success message
                         Toast.show('Message sent successfully! We will contact you soon.', 'success');
                         
                         // Reset form
@@ -1492,7 +1584,7 @@
                     });
                 }
             }
-
+            
             static validateEmail(email) {
                 const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 return re.test(email);
@@ -1503,7 +1595,7 @@
         // INITIALIZE APPLICATION
         // ============================================
 
-        // Register routes
+        // Register all routes
         router.register('home', HomePage);
         router.register('about', AboutPage);
         router.register('services', ServicesPage);
@@ -1511,14 +1603,13 @@
         router.register('portfolio', PortfolioPage);
         router.register('contact', ContactPage);
 
-        // Make router globally accessible
-        window.router = router;
-
-        // Handle browser back/forward
-        window.addEventListener('popstate', () => {
-            // Since we're not using hash routing, just stay on current page
+        // Initialize the application when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
             router.render();
         });
+
+        // Make router available globally for inline event handlers
+        window.router = router;
 
     </script>
 </body>
