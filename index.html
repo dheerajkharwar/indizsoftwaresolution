@@ -52,6 +52,7 @@
         button {
             cursor: pointer;
             font-family: inherit;
+            border: none;
         }
         
         /* Layout Components */
@@ -96,6 +97,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
         }
         
         .logo span {
@@ -114,6 +116,10 @@
             padding: 8px 0;
             position: relative;
             transition: var(--transition);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
         }
         
         .nav-link:hover {
@@ -211,6 +217,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
         }
         
         .btn-primary {
@@ -355,6 +362,7 @@
             font-weight: 500;
             color: var(--dark-color);
             transition: var(--transition);
+            cursor: pointer;
         }
         
         .filter-btn:hover,
@@ -535,6 +543,14 @@
             resize: vertical;
         }
         
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        
         /* Footer Component */
         .footer {
             background: var(--dark-color);
@@ -567,6 +583,11 @@
             color: #d1d5db;
             transition: var(--transition);
             display: inline-block;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
         }
         
         .footer-links a:hover {
@@ -587,10 +608,28 @@
             border-radius: var(--border-radius);
             background: #1f2937;
             color: white;
+            font-family: inherit;
         }
         
         .newsletter-input::placeholder {
             color: #9ca3af;
+        }
+        
+        .newsletter-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .newsletter-btn:hover {
+            background: var(--secondary-color);
         }
         
         .copyright {
@@ -599,6 +638,10 @@
             border-top: 1px solid #374151;
             color: #9ca3af;
             font-size: 0.9rem;
+        }
+        
+        .copyright p {
+            margin-bottom: 5px;
         }
         
         /* Modal Component */
@@ -614,6 +657,7 @@
             justify-content: center;
             z-index: 2000;
             animation: fadeIn 0.3s ease;
+            padding: 20px;
         }
         
         @keyframes fadeIn {
@@ -625,7 +669,7 @@
             background: white;
             border-radius: var(--border-radius);
             max-width: 800px;
-            width: 90%;
+            width: 100%;
             max-height: 90vh;
             overflow-y: auto;
             animation: modalEnter 0.3s ease;
@@ -653,6 +697,7 @@
         .modal-header h3 {
             font-size: 1.8rem;
             color: var(--dark-color);
+            margin: 0;
         }
         
         .modal-close {
@@ -698,6 +743,7 @@
             margin-top: 15px;
             animation: slideInRight 0.3s ease;
             min-width: 300px;
+            max-width: 400px;
         }
         
         @keyframes slideInRight {
@@ -719,6 +765,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
+            flex-shrink: 0;
         }
         
         .toast-success .toast-icon {
@@ -734,6 +781,7 @@
         .toast-content h4 {
             font-size: 1rem;
             margin-bottom: 5px;
+            color: var(--dark-color);
         }
         
         .toast-content p {
@@ -775,6 +823,11 @@
             font-weight: 500;
             font-size: 1.1rem;
             color: var(--dark-color);
+            cursor: pointer;
+            background: none;
+            border: none;
+            text-align: left;
+            font-family: inherit;
         }
         
         .mobile-nav-link.active {
@@ -857,6 +910,49 @@
                 padding: 8px 16px;
                 font-size: 0.9rem;
             }
+            
+            .modal {
+                margin: 10px;
+            }
+            
+            .modal-header,
+            .modal-body {
+                padding: 20px;
+            }
+        }
+        
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 4000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .loading.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -865,9 +961,131 @@
         <!-- Components will be rendered here -->
     </div>
 
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
     <script>
-        // Application Router and State Management
-        class AppRouter {
+        // ============================================
+        // APPLICATION CORE
+        // ============================================
+        
+        // Global state
+        const AppState = {
+            currentPage: 'home',
+            contactSubmissions: [],
+            newsletterSubscribers: [],
+            portfolioFilter: 'all',
+            portfolioData: [
+                {
+                    id: 1,
+                    title: 'E-commerce Platform',
+                    category: 'ecommerce',
+                    description: 'Complete online store with payment integration, inventory management, and admin dashboard.',
+                    technologies: ['PHP', 'MySQL', 'JavaScript', 'Bootstrap'],
+                    features: [
+                        'Responsive design',
+                        'Secure payment gateway',
+                        'Inventory management',
+                        'Order tracking system',
+                        'Admin dashboard'
+                    ],
+                    client: 'Retail Business',
+                    duration: '3 months',
+                    icon: 'fas fa-shopping-cart'
+                },
+                {
+                    id: 2,
+                    title: 'Restaurant POS System',
+                    category: 'pos',
+                    description: 'Point of Sale system with table management, billing, and inventory tracking.',
+                    technologies: ['Java', 'MySQL', 'JavaScript'],
+                    features: [
+                        'Table management',
+                        'Order tracking',
+                        'Inventory integration',
+                        'Billing system',
+                        'Reports & analytics'
+                    ],
+                    client: 'Fine Dining Restaurant',
+                    duration: '2 months',
+                    icon: 'fas fa-utensils'
+                },
+                {
+                    id: 3,
+                    title: 'Inventory Management',
+                    category: 'inventory',
+                    description: 'Cloud-based inventory system with real-time tracking and reporting.',
+                    technologies: ['PHP', 'MySQL', 'AJAX'],
+                    features: [
+                        'Real-time tracking',
+                        'Stock alerts',
+                        'Supplier management',
+                        'Barcode integration',
+                        'Reporting dashboard'
+                    ],
+                    client: 'Wholesale Distributor',
+                    duration: '4 months',
+                    icon: 'fas fa-boxes'
+                },
+                {
+                    id: 4,
+                    title: 'Corporate Website',
+                    category: 'web',
+                    description: 'Modern corporate website with responsive design and SEO optimization.',
+                    technologies: ['HTML5', 'CSS3', 'JavaScript', 'jQuery'],
+                    features: [
+                        'Responsive design',
+                        'SEO optimization',
+                        'Fast loading',
+                        'Contact management',
+                        'Blog integration'
+                    ],
+                    client: 'Technology Company',
+                    duration: '1.5 months',
+                    icon: 'fas fa-globe'
+                },
+                {
+                    id: 5,
+                    title: 'CRM System',
+                    category: 'crm',
+                    description: 'Customer relationship management with lead tracking and analytics.',
+                    technologies: ['PHP', 'MySQL', 'JavaScript'],
+                    features: [
+                        'Lead management',
+                        'Customer tracking',
+                        'Sales pipeline',
+                        'Reporting system',
+                        'Email integration'
+                    ],
+                    client: 'Service Provider',
+                    duration: '3 months',
+                    icon: 'fas fa-users'
+                },
+                {
+                    id: 6,
+                    title: 'Custom ERP Solution',
+                    category: 'custom',
+                    description: 'Enterprise resource planning system for manufacturing company.',
+                    technologies: ['Java', 'React', 'Node.js', 'MongoDB'],
+                    features: [
+                        'Accounting module',
+                        'Inventory control',
+                        'HR management',
+                        'Sales & purchase',
+                        'Production planning'
+                    ],
+                    client: 'Manufacturing Company',
+                    duration: '6 months',
+                    icon: 'fas fa-chart-line'
+                }
+            ]
+        };
+
+        // Router system
+        class Router {
             constructor() {
                 this.routes = {};
                 this.currentRoute = null;
@@ -875,56 +1093,99 @@
             }
 
             init() {
-                window.addEventListener('popstate', () => this.handleRouteChange());
-                document.addEventListener('DOMContentLoaded', () => this.handleRouteChange());
+                // Handle browser back/forward
+                window.addEventListener('popstate', () => this.handleRoute());
+                
+                // Handle link clicks
                 document.addEventListener('click', (e) => {
-                    if (e.target.matches('[data-route]')) {
+                    const routeBtn = e.target.closest('[data-route]');
+                    if (routeBtn) {
                         e.preventDefault();
-                        this.navigate(e.target.getAttribute('data-route'));
+                        const route = routeBtn.getAttribute('data-route');
+                        this.navigate(route);
                     }
                 });
+
+                // Load saved data
+                this.loadData();
+                
+                // Initial route
+                this.handleRoute();
             }
 
-            addRoute(path, component) {
-                this.routes[path] = component;
-            }
-
-            navigate(path) {
-                if (this.routes[path]) {
-                    history.pushState({}, '', '/');
-                    this.currentRoute = path;
+            navigate(route) {
+                if (this.routes[route]) {
+                    history.pushState({}, '', `#${route}`);
+                    AppState.currentPage = route;
                     this.render();
                 }
             }
 
-            handleRouteChange() {
-                const path = window.location.pathname || '/';
-                this.currentRoute = Object.keys(this.routes).includes(path) ? path : '/';
-                this.render();
+            handleRoute() {
+                const hash = window.location.hash.substring(1) || 'home';
+                if (this.routes[hash]) {
+                    AppState.currentPage = hash;
+                    this.render();
+                }
+            }
+
+            register(route, component) {
+                this.routes[route] = component;
             }
 
             render() {
                 const app = document.getElementById('app');
-                const component = this.routes[this.currentRoute];
+                const component = this.routes[AppState.currentPage];
                 if (component) {
                     app.innerHTML = component.render();
-                    if (component.mounted) {
-                        component.mounted();
-                    }
+                    component.mounted();
                 }
+            }
+
+            loadData() {
+                // Load contact submissions
+                const savedContacts = localStorage.getItem('indiz_contacts');
+                if (savedContacts) {
+                    AppState.contactSubmissions = JSON.parse(savedContacts);
+                }
+
+                // Load newsletter subscribers
+                const savedSubscribers = localStorage.getItem('indiz_newsletter');
+                if (savedSubscribers) {
+                    AppState.newsletterSubscribers = JSON.parse(savedSubscribers);
+                }
+            }
+
+            saveData() {
+                localStorage.setItem('indiz_contacts', JSON.stringify(AppState.contactSubmissions));
+                localStorage.setItem('indiz_newsletter', JSON.stringify(AppState.newsletterSubscribers));
             }
         }
 
-        // Component Base Class
+        // Base Component
         class Component {
             constructor(props = {}) {
                 this.props = props;
                 this.state = {};
+                this.router = window.appRouter;
             }
 
             setState(newState) {
                 this.state = { ...this.state, ...newState };
-                this.render();
+                this.router.render();
+            }
+
+            showLoading() {
+                document.getElementById('loading').classList.add('active');
+            }
+
+            hideLoading() {
+                document.getElementById('loading').classList.remove('active');
+            }
+
+            showToast(message, type = 'success') {
+                const toast = new Toast({ message, type });
+                toast.show();
             }
 
             render() {
@@ -934,10 +1195,46 @@
             mounted() {}
         }
 
+        // Toast Component
+        class Toast extends Component {
+            show() {
+                const container = document.querySelector('.toast-container') || (() => {
+                    const div = document.createElement('div');
+                    div.className = 'toast-container';
+                    document.body.appendChild(div);
+                    return div;
+                })();
+
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${this.props.type}`;
+                toast.innerHTML = `
+                    <div class="toast-icon">
+                        <i class="fas fa-${this.props.type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                    </div>
+                    <div class="toast-content">
+                        <h4>${this.props.type === 'success' ? 'Success!' : 'Error!'}</h4>
+                        <p>${this.props.message}</p>
+                    </div>
+                `;
+
+                container.appendChild(toast);
+
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    toast.style.animation = 'slideInRight 0.3s ease reverse';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        // ============================================
+        // PAGE COMPONENTS
+        // ============================================
+
         // Header Component
         class Header extends Component {
             render() {
-                const currentPage = this.props.currentPage || 'home';
+                const current = AppState.currentPage;
                 return `
                     <header class="header">
                         <div class="container">
@@ -948,12 +1245,12 @@
                                 </div>
                                 
                                 <nav class="nav">
-                                    <a href="#" class="nav-link ${currentPage === 'home' ? 'active' : ''}" data-route="home">Home</a>
-                                    <a href="#" class="nav-link ${currentPage === 'about' ? 'active' : ''}" data-route="about">About</a>
-                                    <a href="#" class="nav-link ${currentPage === 'services' ? 'active' : ''}" data-route="services">Services</a>
-                                    <a href="#" class="nav-link ${currentPage === 'technologies' ? 'active' : ''}" data-route="technologies">Technologies</a>
-                                    <a href="#" class="nav-link ${currentPage === 'portfolio' ? 'active' : ''}" data-route="portfolio">Portfolio</a>
-                                    <a href="#" class="nav-link ${currentPage === 'contact' ? 'active' : ''}" data-route="contact">Contact</a>
+                                    <button class="nav-link ${current === 'home' ? 'active' : ''}" data-route="home">Home</button>
+                                    <button class="nav-link ${current === 'about' ? 'active' : ''}" data-route="about">About</button>
+                                    <button class="nav-link ${current === 'services' ? 'active' : ''}" data-route="services">Services</button>
+                                    <button class="nav-link ${current === 'technologies' ? 'active' : ''}" data-route="technologies">Technologies</button>
+                                    <button class="nav-link ${current === 'portfolio' ? 'active' : ''}" data-route="portfolio">Portfolio</button>
+                                    <button class="nav-link ${current === 'contact' ? 'active' : ''}" data-route="contact">Contact</button>
                                 </nav>
                                 
                                 <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -964,12 +1261,12 @@
                         
                         <div class="mobile-menu" id="mobileMenu">
                             <nav class="mobile-nav">
-                                <a href="#" class="mobile-nav-link ${currentPage === 'home' ? 'active' : ''}" data-route="home">Home</a>
-                                <a href="#" class="mobile-nav-link ${currentPage === 'about' ? 'active' : ''}" data-route="about">About</a>
-                                <a href="#" class="mobile-nav-link ${currentPage === 'services' ? 'active' : ''}" data-route="services">Services</a>
-                                <a href="#" class="mobile-nav-link ${currentPage === 'technologies' ? 'active' : ''}" data-route="technologies">Technologies</a>
-                                <a href="#" class="mobile-nav-link ${currentPage === 'portfolio' ? 'active' : ''}" data-route="portfolio">Portfolio</a>
-                                <a href="#" class="mobile-nav-link ${currentPage === 'contact' ? 'active' : ''}" data-route="contact">Contact</a>
+                                <button class="mobile-nav-link ${current === 'home' ? 'active' : ''}" data-route="home">Home</button>
+                                <button class="mobile-nav-link ${current === 'about' ? 'active' : ''}" data-route="about">About</button>
+                                <button class="mobile-nav-link ${current === 'services' ? 'active' : ''}" data-route="services">Services</button>
+                                <button class="mobile-nav-link ${current === 'technologies' ? 'active' : ''}" data-route="technologies">Technologies</button>
+                                <button class="mobile-nav-link ${current === 'portfolio' ? 'active' : ''}" data-route="portfolio">Portfolio</button>
+                                <button class="mobile-nav-link ${current === 'contact' ? 'active' : ''}" data-route="contact">Contact</button>
                             </nav>
                         </div>
                     </header>
@@ -977,19 +1274,114 @@
             }
 
             mounted() {
-                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                // Mobile menu toggle
+                const mobileBtn = document.getElementById('mobileMenuBtn');
                 const mobileMenu = document.getElementById('mobileMenu');
-
-                if (mobileMenuBtn && mobileMenu) {
-                    mobileMenuBtn.addEventListener('click', () => {
+                
+                if (mobileBtn && mobileMenu) {
+                    mobileBtn.addEventListener('click', () => {
                         mobileMenu.classList.toggle('active');
                     });
 
-                    // Close mobile menu when clicking a link
+                    // Close menu when clicking links
                     document.querySelectorAll('.mobile-nav-link').forEach(link => {
                         link.addEventListener('click', () => {
                             mobileMenu.classList.remove('active');
                         });
+                    });
+                }
+            }
+        }
+
+        // Footer Component
+        class Footer extends Component {
+            render() {
+                return `
+                    <footer class="footer">
+                        <div class="container">
+                            <div class="footer-grid">
+                                <div class="footer-section">
+                                    <h3>Indiz Software</h3>
+                                    <p style="color: #d1d5db; line-height: 1.8; margin-bottom: 20px;">
+                                        Delivering innovative software solutions to help businesses thrive in the digital age.
+                                    </p>
+                                    <div style="display: flex; gap: 15px; margin-top: 20px;">
+                                        <button style="color: white; font-size: 1.2rem; background: none; border: none; cursor: pointer;" onclick="window.open('https://facebook.com', '_blank')">
+                                            <i class="fab fa-facebook"></i>
+                                        </button>
+                                        <button style="color: white; font-size: 1.2rem; background: none; border: none; cursor: pointer;" onclick="window.open('https://twitter.com', '_blank')">
+                                            <i class="fab fa-twitter"></i>
+                                        </button>
+                                        <button style="color: white; font-size: 1.2rem; background: none; border: none; cursor: pointer;" onclick="window.open('https://linkedin.com', '_blank')">
+                                            <i class="fab fa-linkedin"></i>
+                                        </button>
+                                        <button style="color: white; font-size: 1.2rem; background: none; border: none; cursor: pointer;" onclick="window.open('https://instagram.com', '_blank')">
+                                            <i class="fab fa-instagram"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="footer-section">
+                                    <h3>Quick Links</h3>
+                                    <ul class="footer-links">
+                                        <li><button data-route="home">Home</button></li>
+                                        <li><button data-route="about">About Us</button></li>
+                                        <li><button data-route="services">Services</button></li>
+                                        <li><button data-route="technologies">Technologies</button></li>
+                                        <li><button data-route="portfolio">Portfolio</button></li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="footer-section">
+                                    <h3>Services</h3>
+                                    <ul class="footer-links">
+                                        <li><button data-route="services">Website Development</button></li>
+                                        <li><button data-route="services">E-commerce Solutions</button></li>
+                                        <li><button data-route="services">Inventory Management</button></li>
+                                        <li><button data-route="services">POS Systems</button></li>
+                                        <li><button data-route="services">CRM Solutions</button></li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="footer-section">
+                                    <h3>Newsletter</h3>
+                                    <p style="color: #d1d5db; margin-bottom: 15px;">
+                                        Subscribe to our newsletter for updates on new technologies and offers.
+                                    </p>
+                                    <form class="newsletter-form" id="newsletterForm">
+                                        <input type="email" class="newsletter-input" placeholder="Your email" required>
+                                        <button type="submit" class="newsletter-btn">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="copyright">
+                                <p>&copy; ${new Date().getFullYear()} Indiz Software Solution. All rights reserved.</p>
+                                <p style="margin-top: 10px;">Contact: +91 7526018014 | Email: indizsoftwaresolution@gmail.com</p>
+                            </div>
+                        </div>
+                    </footer>
+                `;
+            }
+
+            mounted() {
+                const form = document.getElementById('newsletterForm');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const email = form.querySelector('.newsletter-input').value;
+                        
+                        if (email) {
+                            AppState.newsletterSubscribers.push({
+                                email,
+                                date: new Date().toISOString()
+                            });
+                            this.router.saveData();
+                            this.showToast('Successfully subscribed to newsletter!', 'success');
+                            form.reset();
+                        }
                     });
                 }
             }
@@ -1000,7 +1392,7 @@
             render() {
                 return `
                     <div class="page">
-                        ${new Header({ currentPage: 'home' }).render()}
+                        ${new Header().render()}
                         <main class="main-content">
                             <section class="hero">
                                 <div class="container">
@@ -1008,11 +1400,11 @@
                                         <h1>Transform Your Business with Cutting-Edge Software Solutions</h1>
                                         <p>We deliver innovative web and software development services that drive growth, enhance productivity, and streamline operations for businesses worldwide.</p>
                                         <div class="hero-buttons">
-                                            <button class="btn btn-primary" data-route="contact">
+                                            <button class="btn btn-primary" id="getInTouchBtn">
                                                 <i class="fas fa-paper-plane"></i>
-                                                Start a Project
+                                                Get In Touch
                                             </button>
-                                            <button class="btn btn-outline" data-route="portfolio">
+                                            <button class="btn btn-outline" id="viewPortfolioBtn">
                                                 <i class="fas fa-eye"></i>
                                                 View Our Work
                                             </button>
@@ -1034,6 +1426,9 @@
                                             </div>
                                             <h3>Web Development</h3>
                                             <p>Custom websites and web applications with modern frameworks and responsive design.</p>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="services">
+                                                Learn More
+                                            </button>
                                         </div>
                                         <div class="service-card">
                                             <div class="service-icon">
@@ -1041,6 +1436,9 @@
                                             </div>
                                             <h3>E-commerce</h3>
                                             <p>Complete online stores with secure payment gateways and inventory management.</p>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="services">
+                                                Learn More
+                                            </button>
                                         </div>
                                         <div class="service-card">
                                             <div class="service-icon">
@@ -1048,6 +1446,9 @@
                                             </div>
                                             <h3>Business Solutions</h3>
                                             <p>Custom ERP, CRM, POS, and inventory systems tailored to your business needs.</p>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="services">
+                                                Learn More
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1059,18 +1460,114 @@
             }
 
             mounted() {
-                new Header({ currentPage: 'home' }).mounted();
-                this.setupEventListeners();
+                new Header().mounted();
+                new Footer().mounted();
+                
+                // Button event handlers
+                document.getElementById('getInTouchBtn')?.addEventListener('click', () => {
+                    this.router.navigate('contact');
+                });
+                
+                document.getElementById('viewPortfolioBtn')?.addEventListener('click', () => {
+                    this.router.navigate('portfolio');
+                });
+            }
+        }
+
+        // About Page Component
+        class AboutPage extends Component {
+            render() {
+                return `
+                    <div class="page">
+                        ${new Header().render()}
+                        <main class="main-content">
+                            <section class="about">
+                                <div class="container">
+                                    <div class="about-content">
+                                        <div class="about-text">
+                                            <h2>About Indiz Software Solution</h2>
+                                            <p style="margin-bottom: 20px; color: var(--gray-color); line-height: 1.8;">
+                                                Founded by <strong>Dheeraj</strong>, Indiz Software Solution is a leading software development company specializing in creating custom web applications, e-commerce solutions, inventory management systems, POS software, and CRM platforms.
+                                            </p>
+                                            <p style="margin-bottom: 20px; color: var(--gray-color); line-height: 1.8;">
+                                                With extensive experience across multiple industries, we've delivered numerous successful projects that have helped businesses streamline operations, enhance customer experiences, and drive revenue growth.
+                                            </p>
+                                            <p style="color: var(--gray-color); line-height: 1.8;">
+                                                Our team of skilled developers excels in various technologies including PHP, Java, JavaScript, jQuery, and AJAX, ensuring we can tackle any project with precision and efficiency.
+                                            </p>
+                                            
+                                            <div class="stats-grid" style="margin-top: 40px;">
+                                                <div class="stat-card">
+                                                    <h3>50+</h3>
+                                                    <p style="color: var(--gray-color); font-weight: 500;">Projects Completed</p>
+                                                </div>
+                                                <div class="stat-card">
+                                                    <h3>5+</h3>
+                                                    <p style="color: var(--gray-color); font-weight: 500;">Years Experience</p>
+                                                </div>
+                                                <div class="stat-card">
+                                                    <h3>30+</h3>
+                                                    <p style="color: var(--gray-color); font-weight: 500;">Happy Clients</p>
+                                                </div>
+                                                <div class="stat-card">
+                                                    <h3>15+</h3>
+                                                    <p style="color: var(--gray-color); font-weight: 500;">Technologies</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="about-text">
+                                            <div style="background: var(--light-color); padding: 30px; border-radius: var(--border-radius); margin-bottom: 30px;">
+                                                <h3 style="margin-bottom: 20px; color: var(--dark-color);">Our Mission</h3>
+                                                <p style="color: var(--gray-color); line-height: 1.8;">
+                                                    To empower businesses with innovative, reliable, and scalable software solutions that drive growth and operational efficiency.
+                                                </p>
+                                            </div>
+                                            
+                                            <div style="background: var(--light-color); padding: 30px; border-radius: var(--border-radius); margin-bottom: 30px;">
+                                                <h3 style="margin-bottom: 20px; color: var(--dark-color);">Our Vision</h3>
+                                                <p style="color: var(--gray-color); line-height: 1.8;">
+                                                    To become the most trusted software development partner for businesses across industries, known for excellence, innovation, and customer satisfaction.
+                                                </p>
+                                            </div>
+                                            
+                                            <div style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); padding: 30px; border-radius: var(--border-radius); color: white;">
+                                                <h3 style="margin-bottom: 20px;">Contact Information</h3>
+                                                <div style="display: grid; gap: 15px;">
+                                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                                        <i class="fas fa-user"></i>
+                                                        <span>Dheeraj (Founder)</span>
+                                                    </div>
+                                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                                        <i class="fas fa-phone"></i>
+                                                        <span>+91 7526018014</span>
+                                                    </div>
+                                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                                        <i class="fas fa-envelope"></i>
+                                                        <span>indizsoftwaresolution@gmail.com</span>
+                                                    </div>
+                                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                                        <i class="fas fa-globe"></i>
+                                                        <span>indizsoftwaresolution.in</span>
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-primary" style="margin-top: 20px; background: white; color: var(--primary-color);" data-route="contact">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                    Contact Now
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </main>
+                        ${new Footer().render()}
+                    </div>
+                `;
             }
 
-            setupEventListeners() {
-                document.querySelectorAll('[data-route="contact"]').forEach(btn => {
-                    btn.addEventListener('click', () => router.navigate('contact'));
-                });
-
-                document.querySelectorAll('[data-route="portfolio"]').forEach(btn => {
-                    btn.addEventListener('click', () => router.navigate('portfolio'));
-                });
+            mounted() {
+                new Header().mounted();
+                new Footer().mounted();
             }
         }
 
@@ -1079,7 +1576,7 @@
             render() {
                 return `
                     <div class="page">
-                        ${new Header({ currentPage: 'services' }).render()}
+                        ${new Header().render()}
                         <main class="main-content">
                             <section class="services">
                                 <div class="container">
@@ -1090,7 +1587,7 @@
                                     <div class="services-grid">
                                         <div class="service-card">
                                             <div class="service-icon">
-                                                <i class="fas fa-globe"></i>
+                                                <i class="fas fa-laptop-code"></i>
                                             </div>
                                             <h3>Website Development</h3>
                                             <p>Custom websites with responsive design, SEO optimization, and content management systems.</p>
@@ -1100,6 +1597,10 @@
                                                 <li>Web Portals</li>
                                                 <li>Blog Platforms</li>
                                             </ul>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
+                                                <i class="fas fa-paper-plane"></i>
+                                                Get Quote
+                                            </button>
                                         </div>
                                         <div class="service-card">
                                             <div class="service-icon">
@@ -1113,6 +1614,10 @@
                                                 <li>Payment Integration</li>
                                                 <li>Inventory Management</li>
                                             </ul>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
+                                                <i class="fas fa-paper-plane"></i>
+                                                Get Quote
+                                            </button>
                                         </div>
                                         <div class="service-card">
                                             <div class="service-icon">
@@ -1126,6 +1631,10 @@
                                                 <li>Supplier Management</li>
                                                 <li>Barcode Integration</li>
                                             </ul>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
+                                                <i class="fas fa-paper-plane"></i>
+                                                Get Quote
+                                            </button>
                                         </div>
                                         <div class="service-card">
                                             <div class="service-icon">
@@ -1139,6 +1648,10 @@
                                                 <li>Sales Analytics</li>
                                                 <li>Customer Management</li>
                                             </ul>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
+                                                <i class="fas fa-paper-plane"></i>
+                                                Get Quote
+                                            </button>
                                         </div>
                                         <div class="service-card">
                                             <div class="service-icon">
@@ -1152,6 +1665,10 @@
                                                 <li>Customer Support</li>
                                                 <li>Marketing Automation</li>
                                             </ul>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
+                                                <i class="fas fa-paper-plane"></i>
+                                                Get Quote
+                                            </button>
                                         </div>
                                         <div class="service-card">
                                             <div class="service-icon">
@@ -1165,6 +1682,10 @@
                                                 <li>Custom Integrations</li>
                                                 <li>API Development</li>
                                             </ul>
+                                            <button class="btn btn-primary" style="margin-top: 20px;" data-route="contact">
+                                                <i class="fas fa-paper-plane"></i>
+                                                Get Quote
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1176,7 +1697,8 @@
             }
 
             mounted() {
-                new Header({ currentPage: 'services' }).mounted();
+                new Header().mounted();
+                new Footer().mounted();
             }
         }
 
@@ -1185,7 +1707,7 @@
             render() {
                 return `
                     <div class="page">
-                        ${new Header({ currentPage: 'technologies' }).render()}
+                        ${new Header().render()}
                         <main class="main-content">
                             <section class="technologies">
                                 <div class="container">
@@ -1291,6 +1813,12 @@
                                             <span>Sass</span>
                                         </div>
                                     </div>
+                                    <div style="text-align: center; margin-top: 50px;">
+                                        <button class="btn btn-primary" data-route="contact">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            Schedule a Technical Consultation
+                                        </button>
+                                    </div>
                                 </div>
                             </section>
                         </main>
@@ -1300,7 +1828,8 @@
             }
 
             mounted() {
-                new Header({ currentPage: 'technologies' }).mounted();
+                new Header().mounted();
+                new Footer().mounted();
             }
         }
 
@@ -1308,69 +1837,17 @@
         class PortfolioPage extends Component {
             constructor() {
                 super();
-                this.state = {
-                    filter: 'all',
-                    projects: [
-                        {
-                            id: 1,
-                            title: 'E-commerce Platform',
-                            category: 'ecommerce',
-                            description: 'Full-featured online store with admin dashboard and payment integration.',
-                            technologies: ['PHP', 'MySQL', 'JavaScript', 'Bootstrap'],
-                            icon: 'fas fa-shopping-cart'
-                        },
-                        {
-                            id: 2,
-                            title: 'Restaurant POS System',
-                            category: 'pos',
-                            description: 'Point of Sale system with table management and inventory tracking.',
-                            technologies: ['Java', 'MySQL', 'JavaScript'],
-                            icon: 'fas fa-utensils'
-                        },
-                        {
-                            id: 3,
-                            title: 'Inventory Management',
-                            category: 'inventory',
-                            description: 'Cloud-based inventory system with real-time tracking and reporting.',
-                            technologies: ['PHP', 'MySQL', 'AJAX'],
-                            icon: 'fas fa-boxes'
-                        },
-                        {
-                            id: 4,
-                            title: 'Corporate Website',
-                            category: 'web',
-                            description: 'Modern corporate website with responsive design and SEO optimization.',
-                            technologies: ['HTML5', 'CSS3', 'JavaScript', 'jQuery'],
-                            icon: 'fas fa-globe'
-                        },
-                        {
-                            id: 5,
-                            title: 'CRM System',
-                            category: 'crm',
-                            description: 'Customer relationship management with lead tracking and analytics.',
-                            technologies: ['PHP', 'MySQL', 'JavaScript'],
-                            icon: 'fas fa-users'
-                        },
-                        {
-                            id: 6,
-                            title: 'Custom ERP Solution',
-                            category: 'custom',
-                            description: 'Enterprise resource planning system for manufacturing company.',
-                            technologies: ['Java', 'React', 'Node.js', 'MongoDB'],
-                            icon: 'fas fa-chart-line'
-                        }
-                    ]
-                };
+                this.state = { filter: 'all' };
             }
 
             render() {
                 const filteredProjects = this.state.filter === 'all' 
-                    ? this.state.projects 
-                    : this.state.projects.filter(p => p.category === this.state.filter);
+                    ? AppState.portfolioData 
+                    : AppState.portfolioData.filter(p => p.category === this.state.filter);
 
                 return `
                     <div class="page">
-                        ${new Header({ currentPage: 'portfolio' }).render()}
+                        ${new Header().render()}
                         <main class="main-content">
                             <section class="portfolio">
                                 <div class="container">
@@ -1380,32 +1857,25 @@
                                     </div>
                                     
                                     <div class="portfolio-filter">
-                                        <button class="filter-btn ${this.state.filter === 'all' ? 'active' : ''}" 
-                                                data-filter="all">
+                                        <button class="filter-btn ${this.state.filter === 'all' ? 'active' : ''}" data-filter="all">
                                             All Projects
                                         </button>
-                                        <button class="filter-btn ${this.state.filter === 'web' ? 'active' : ''}" 
-                                                data-filter="web">
+                                        <button class="filter-btn ${this.state.filter === 'web' ? 'active' : ''}" data-filter="web">
                                             Web Development
                                         </button>
-                                        <button class="filter-btn ${this.state.filter === 'ecommerce' ? 'active' : ''}" 
-                                                data-filter="ecommerce">
+                                        <button class="filter-btn ${this.state.filter === 'ecommerce' ? 'active' : ''}" data-filter="ecommerce">
                                             E-commerce
                                         </button>
-                                        <button class="filter-btn ${this.state.filter === 'pos' ? 'active' : ''}" 
-                                                data-filter="pos">
+                                        <button class="filter-btn ${this.state.filter === 'pos' ? 'active' : ''}" data-filter="pos">
                                             POS Systems
                                         </button>
-                                        <button class="filter-btn ${this.state.filter === 'inventory' ? 'active' : ''}" 
-                                                data-filter="inventory">
+                                        <button class="filter-btn ${this.state.filter === 'inventory' ? 'active' : ''}" data-filter="inventory">
                                             Inventory
                                         </button>
-                                        <button class="filter-btn ${this.state.filter === 'crm' ? 'active' : ''}" 
-                                                data-filter="crm">
+                                        <button class="filter-btn ${this.state.filter === 'crm' ? 'active' : ''}" data-filter="crm">
                                             CRM
                                         </button>
-                                        <button class="filter-btn ${this.state.filter === 'custom' ? 'active' : ''}" 
-                                                data-filter="custom">
+                                        <button class="filter-btn ${this.state.filter === 'custom' ? 'active' : ''}" data-filter="custom">
                                             Custom Apps
                                         </button>
                                     </div>
@@ -1425,13 +1895,19 @@
                                                         `).join('')}
                                                     </div>
                                                     <button class="btn btn-primary" style="margin-top: 15px; width: 100%;" 
-                                                            data-project-id="${project.id}">
+                                                            data-project="${project.id}">
                                                         <i class="fas fa-eye"></i>
                                                         View Details
                                                     </button>
                                                 </div>
                                             </div>
                                         `).join('')}
+                                    </div>
+                                    <div style="text-align: center; margin-top: 50px;">
+                                        <button class="btn btn-primary" data-route="contact">
+                                            <i class="fas fa-lightbulb"></i>
+                                            Have a Similar Project in Mind?
+                                        </button>
                                     </div>
                                 </div>
                             </section>
@@ -1442,7 +1918,8 @@
             }
 
             mounted() {
-                new Header({ currentPage: 'portfolio' }).mounted();
+                new Header().mounted();
+                new Footer().mounted();
                 
                 // Filter buttons
                 document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1453,143 +1930,98 @@
                 });
 
                 // Project detail buttons
-                document.querySelectorAll('[data-project-id]').forEach(btn => {
+                document.querySelectorAll('[data-project]').forEach(btn => {
                     btn.addEventListener('click', (e) => {
-                        const projectId = e.target.getAttribute('data-project-id');
+                        const projectId = e.target.getAttribute('data-project');
                         this.showProjectModal(projectId);
                     });
                 });
             }
 
             showProjectModal(projectId) {
-                const project = this.state.projects.find(p => p.id == projectId);
+                const project = AppState.portfolioData.find(p => p.id == projectId);
                 if (!project) return;
 
-                const modal = new Modal({
-                    title: project.title,
-                    content: `
-                        <div style="display: grid; gap: 30px;">
-                            <div>
-                                <h4 style="margin-bottom: 15px; color: var(--dark-color);">Project Description</h4>
-                                <p style="color: var(--gray-color); line-height: 1.8;">${project.description}</p>
+                const modalHTML = `
+                    <div class="modal-overlay" id="projectModal">
+                        <div class="modal">
+                            <div class="modal-header">
+                                <h3>${project.title}</h3>
+                                <button class="modal-close" id="closeModal">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
-                            <div>
-                                <h4 style="margin-bottom: 15px; color: var(--dark-color);">Technologies Used</h4>
-                                <div class="tech-tags">
-                                    ${project.technologies.map(tech => `
-                                        <span class="tech-tag">${tech}</span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div>
-                                <h4 style="margin-bottom: 15px; color: var(--dark-color);">Key Features</h4>
-                                <ul style="color: var(--gray-color); padding-left: 20px; line-height: 1.8;">
-                                    <li>Custom design and development</li>
-                                    <li>Responsive across all devices</li>
-                                    <li>Secure and scalable architecture</li>
-                                    <li>Ongoing maintenance and support</li>
-                                </ul>
-                            </div>
-                            <button class="btn btn-primary" data-route="contact" style="width: 100%;">
-                                <i class="fas fa-paper-plane"></i>
-                                Start Similar Project
-                            </button>
-                        </div>
-                    `
-                });
-                modal.show();
-            }
-        }
-
-        // About Page Component
-        class AboutPage extends Component {
-            render() {
-                return `
-                    <div class="page">
-                        ${new Header({ currentPage: 'about' }).render()}
-                        <main class="main-content">
-                            <section class="about">
-                                <div class="container">
-                                    <div class="about-content">
-                                        <div class="about-text">
-                                            <h2>About Indiz Software Solution</h2>
-                                            <p style="margin-bottom: 20px; color: var(--gray-color); line-height: 1.8;">
-                                                Founded by <strong>Dheeraj</strong>, Indiz Software Solution is a leading software development company specializing in creating custom web applications, e-commerce solutions, inventory management systems, POS software, and CRM platforms.
-                                            </p>
-                                            <p style="margin-bottom: 20px; color: var(--gray-color); line-height: 1.8;">
-                                                With extensive experience across multiple industries, we've delivered numerous successful projects that have helped businesses streamline operations, enhance customer experiences, and drive revenue growth.
-                                            </p>
-                                            <p style="color: var(--gray-color); line-height: 1.8;">
-                                                Our team of skilled developers excels in various technologies including PHP, Java, JavaScript, jQuery, and AJAX, ensuring we can tackle any project with precision and efficiency.
-                                            </p>
-                                            
-                                            <div class="stats-grid" style="margin-top: 40px;">
-                                                <div class="stat-card">
-                                                    <h3>50+</h3>
-                                                    <p style="color: var(--gray-color); font-weight: 500;">Projects Completed</p>
-                                                </div>
-                                                <div class="stat-card">
-                                                    <h3>5+</h3>
-                                                    <p style="color: var(--gray-color); font-weight: 500;">Years Experience</p>
-                                                </div>
-                                                <div class="stat-card">
-                                                    <h3>30+</h3>
-                                                    <p style="color: var(--gray-color); font-weight: 500;">Happy Clients</p>
-                                                </div>
-                                                <div class="stat-card">
-                                                    <h3>15+</h3>
-                                                    <p style="color: var(--gray-color); font-weight: 500;">Technologies</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="about-text">
-                                            <div style="background: var(--light-color); padding: 30px; border-radius: var(--border-radius); margin-bottom: 30px;">
-                                                <h3 style="margin-bottom: 20px; color: var(--dark-color);">Our Mission</h3>
-                                                <p style="color: var(--gray-color); line-height: 1.8;">
-                                                    To empower businesses with innovative, reliable, and scalable software solutions that drive growth and operational efficiency.
-                                                </p>
-                                            </div>
-                                            
-                                            <div style="background: var(--light-color); padding: 30px; border-radius: var(--border-radius); margin-bottom: 30px;">
-                                                <h3 style="margin-bottom: 20px; color: var(--dark-color);">Our Vision</h3>
-                                                <p style="color: var(--gray-color); line-height: 1.8;">
-                                                    To become the most trusted software development partner for businesses across industries, known for excellence, innovation, and customer satisfaction.
-                                                </p>
-                                            </div>
-                                            
-                                            <div style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); padding: 30px; border-radius: var(--border-radius); color: white;">
-                                                <h3 style="margin-bottom: 20px;">Contact Information</h3>
-                                                <div style="display: grid; gap: 15px;">
-                                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                                        <i class="fas fa-user"></i>
-                                                        <span>Dheeraj (Founder)</span>
-                                                    </div>
-                                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                                        <i class="fas fa-phone"></i>
-                                                        <span>+91 7526018014</span>
-                                                    </div>
-                                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                                        <i class="fas fa-envelope"></i>
-                                                        <span>indizsoftwaresolution@gmail.com</span>
-                                                    </div>
-                                                    <div style="display: flex; align-items: center; gap: 15px;">
-                                                        <i class="fas fa-globe"></i>
-                                                        <span>indizsoftwaresolution.in</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                            <div class="modal-body">
+                                <div style="display: grid; gap: 30px;">
+                                    <div>
+                                        <h4 style="margin-bottom: 15px; color: var(--dark-color);">Project Overview</h4>
+                                        <p style="color: var(--gray-color); line-height: 1.8;">${project.description}</p>
+                                    </div>
+                                    <div>
+                                        <h4 style="margin-bottom: 15px; color: var(--dark-color);">Client</h4>
+                                        <p style="color: var(--gray-color);">${project.client}</p>
+                                    </div>
+                                    <div>
+                                        <h4 style="margin-bottom: 15px; color: var(--dark-color);">Duration</h4>
+                                        <p style="color: var(--gray-color);">${project.duration}</p>
+                                    </div>
+                                    <div>
+                                        <h4 style="margin-bottom: 15px; color: var(--dark-color);">Technologies Used</h4>
+                                        <div class="tech-tags">
+                                            ${project.technologies.map(tech => `
+                                                <span class="tech-tag">${tech}</span>
+                                            `).join('')}
                                         </div>
                                     </div>
+                                    <div>
+                                        <h4 style="margin-bottom: 15px; color: var(--dark-color);">Key Features</h4>
+                                        <ul style="color: var(--gray-color); padding-left: 20px; line-height: 1.8;">
+                                            ${project.features.map(feature => `<li>${feature}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    <button class="btn btn-primary" style="width: 100%;" data-route="contact">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Start Similar Project
+                                    </button>
                                 </div>
-                            </section>
-                        </main>
-                        ${new Footer().render()}
+                            </div>
+                        </div>
                     </div>
                 `;
-            }
 
-            mounted() {
-                new Header({ currentPage: 'about' }).mounted();
+                // Remove existing modal if any
+                const existingModal = document.getElementById('projectModal');
+                if (existingModal) existingModal.remove();
+
+                // Add new modal
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                // Add event listeners
+                const closeBtn = document.getElementById('closeModal');
+                const overlay = document.getElementById('projectModal');
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        overlay.remove();
+                    });
+                }
+
+                if (overlay) {
+                    overlay.addEventListener('click', (e) => {
+                        if (e.target === overlay) {
+                            overlay.remove();
+                        }
+                    });
+                }
+
+                // Escape key to close
+                const handleEscape = (e) => {
+                    if (e.key === 'Escape' && document.getElementById('projectModal')) {
+                        document.getElementById('projectModal').remove();
+                        document.removeEventListener('keydown', handleEscape);
+                    }
+                };
+                document.addEventListener('keydown', handleEscape);
             }
         }
 
@@ -1598,18 +2030,21 @@
             constructor() {
                 super();
                 this.state = {
-                    name: '',
-                    email: '',
-                    phone: '',
-                    service: '',
-                    message: ''
+                    formData: {
+                        name: '',
+                        email: '',
+                        phone: '',
+                        service: '',
+                        message: ''
+                    },
+                    errors: {}
                 };
             }
 
             render() {
                 return `
                     <div class="page">
-                        ${new Header({ currentPage: 'contact' }).render()}
+                        ${new Header().render()}
                         <main class="main-content">
                             <section class="contact">
                                 <div class="container">
@@ -1667,6 +2102,18 @@
                                                 <p style="color: var(--gray-color); margin-bottom: 10px;">Monday - Friday: 9:00 AM - 7:00 PM</p>
                                                 <p style="color: var(--gray-color);">Saturday: 10:00 AM - 5:00 PM</p>
                                             </div>
+                                            
+                                            <div style="margin-top: 40px;">
+                                                <h4 style="margin-bottom: 20px; color: var(--dark-color);">Quick Actions</h4>
+                                                <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="window.open('tel:+917526018014')">
+                                                    <i class="fas fa-phone"></i>
+                                                    Call Now
+                                                </button>
+                                                <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="window.open('mailto:indizsoftwaresolution@gmail.com')">
+                                                    <i class="fas fa-envelope"></i>
+                                                    Send Email
+                                                </button>
+                                            </div>
                                         </div>
                                         
                                         <div class="contact-form">
@@ -1674,43 +2121,47 @@
                                             <form id="contactForm">
                                                 <div class="form-group">
                                                     <label for="name">Full Name *</label>
-                                                    <input type="text" id="name" class="form-control" required 
-                                                           value="${this.state.name}" 
-                                                           oninput="document.dispatchEvent(new CustomEvent('contact-update', { detail: { field: 'name', value: this.value } }))">
+                                                    <input type="text" id="name" class="form-control" 
+                                                           value="${this.state.formData.name}"
+                                                           oninput="window.appRouter.routes.contact.handleInput('name', this.value)">
+                                                    ${this.state.errors.name ? `<p style="color: var(--danger-color); font-size: 0.9rem; margin-top: 5px;">${this.state.errors.name}</p>` : ''}
                                                 </div>
                                                 
                                                 <div class="form-group">
                                                     <label for="email">Email Address *</label>
-                                                    <input type="email" id="email" class="form-control" required 
-                                                           value="${this.state.email}" 
-                                                           oninput="document.dispatchEvent(new CustomEvent('contact-update', { detail: { field: 'email', value: this.value } }))">
+                                                    <input type="email" id="email" class="form-control"
+                                                           value="${this.state.formData.email}"
+                                                           oninput="window.appRouter.routes.contact.handleInput('email', this.value)">
+                                                    ${this.state.errors.email ? `<p style="color: var(--danger-color); font-size: 0.9rem; margin-top: 5px;">${this.state.errors.email}</p>` : ''}
                                                 </div>
                                                 
                                                 <div class="form-group">
                                                     <label for="phone">Phone Number</label>
-                                                    <input type="tel" id="phone" class="form-control" 
-                                                           value="${this.state.phone}" 
-                                                           oninput="document.dispatchEvent(new CustomEvent('contact-update', { detail: { field: 'phone', value: this.value } }))">
+                                                    <input type="tel" id="phone" class="form-control"
+                                                           value="${this.state.formData.phone}"
+                                                           oninput="window.appRouter.routes.contact.handleInput('phone', this.value)">
                                                 </div>
                                                 
                                                 <div class="form-group">
                                                     <label for="service">Service Interested In</label>
-                                                    <select id="service" class="form-control" 
-                                                            onchange="document.dispatchEvent(new CustomEvent('contact-update', { detail: { field: 'service', value: this.value } }))">
+                                                    <select id="service" class="form-control"
+                                                            onchange="window.appRouter.routes.contact.handleInput('service', this.value)">
                                                         <option value="">Select a service</option>
-                                                        <option value="web" ${this.state.service === 'web' ? 'selected' : ''}>Website Development</option>
-                                                        <option value="ecommerce" ${this.state.service === 'ecommerce' ? 'selected' : ''}>E-commerce Solution</option>
-                                                        <option value="inventory" ${this.state.service === 'inventory' ? 'selected' : ''}>Inventory Management</option>
-                                                        <option value="pos" ${this.state.service === 'pos' ? 'selected' : ''}>POS System</option>
-                                                        <option value="crm" ${this.state.service === 'crm' ? 'selected' : ''}>CRM System</option>
-                                                        <option value="custom" ${this.state.service === 'custom' ? 'selected' : ''}>Custom Application</option>
+                                                        <option value="web" ${this.state.formData.service === 'web' ? 'selected' : ''}>Website Development</option>
+                                                        <option value="ecommerce" ${this.state.formData.service === 'ecommerce' ? 'selected' : ''}>E-commerce Solution</option>
+                                                        <option value="inventory" ${this.state.formData.service === 'inventory' ? 'selected' : ''}>Inventory Management</option>
+                                                        <option value="pos" ${this.state.formData.service === 'pos' ? 'selected' : ''}>POS System</option>
+                                                        <option value="crm" ${this.state.formData.service === 'crm' ? 'selected' : ''}>CRM System</option>
+                                                        <option value="custom" ${this.state.formData.service === 'custom' ? 'selected' : ''}>Custom Application</option>
+                                                        <option value="consultation" ${this.state.formData.service === 'consultation' ? 'selected' : ''}>Consultation</option>
                                                     </select>
                                                 </div>
                                                 
                                                 <div class="form-group">
                                                     <label for="message">Project Details *</label>
-                                                    <textarea id="message" class="form-control" required 
-                                                              oninput="document.dispatchEvent(new CustomEvent('contact-update', { detail: { field: 'message', value: this.value } }))">${this.state.message}</textarea>
+                                                    <textarea id="message" class="form-control" rows="5"
+                                                              oninput="window.appRouter.routes.contact.handleInput('message', this.value)">${this.state.formData.message}</textarea>
+                                                    ${this.state.errors.message ? `<p style="color: var(--danger-color); font-size: 0.9rem; margin-top: 5px;">${this.state.errors.message}</p>` : ''}
                                                 </div>
                                                 
                                                 <button type="submit" class="btn btn-primary" style="width: 100%;">
@@ -1729,8 +2180,9 @@
             }
 
             mounted() {
-                new Header({ currentPage: 'contact' }).mounted();
-                
+                new Header().mounted();
+                new Footer().mounted();
+
                 // Form submission
                 const form = document.getElementById('contactForm');
                 if (form) {
@@ -1739,271 +2191,92 @@
                         this.handleSubmit();
                     });
                 }
+            }
 
-                // Form updates
-                document.addEventListener('contact-update', (e) => {
-                    this.setState({ [e.detail.field]: e.detail.value });
+            handleInput(field, value) {
+                this.setState({
+                    formData: { ...this.state.formData, [field]: value },
+                    errors: { ...this.state.errors, [field]: '' }
                 });
             }
 
             handleSubmit() {
-                const submission = {
-                    name: this.state.name,
-                    email: this.state.email,
-                    phone: this.state.phone,
-                    service: this.state.service,
-                    message: this.state.message,
-                    date: new Date().toISOString()
-                };
+                // Validate form
+                const errors = {};
+                const { name, email, message } = this.state.formData;
 
-                // Save to localStorage
-                const submissions = JSON.parse(localStorage.getItem('contactSubmissions') || '[]');
-                submissions.push(submission);
-                localStorage.setItem('contactSubmissions', JSON.stringify(submissions));
+                if (!name.trim()) errors.name = 'Name is required';
+                if (!email.trim()) errors.email = 'Email is required';
+                else if (!this.validateEmail(email)) errors.email = 'Invalid email format';
+                if (!message.trim()) errors.message = 'Message is required';
 
-                // Show success message
-                new Toast({
-                    title: 'Success!',
-                    message: 'Your message has been sent successfully.',
-                    type: 'success'
-                }).show();
-
-                // Reset form
-                this.setState({
-                    name: '',
-                    email: '',
-                    phone: '',
-                    service: '',
-                    message: ''
-                });
-            }
-        }
-
-        // Footer Component
-        class Footer extends Component {
-            render() {
-                return `
-                    <footer class="footer">
-                        <div class="container">
-                            <div class="footer-grid">
-                                <div class="footer-section">
-                                    <h3>Indiz Software</h3>
-                                    <p style="color: #d1d5db; line-height: 1.8; margin-bottom: 20px;">
-                                        Delivering innovative software solutions to help businesses thrive in the digital age.
-                                    </p>
-                                    <div style="display: flex; gap: 15px; margin-top: 20px;">
-                                        <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-facebook"></i></a>
-                                        <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-twitter"></i></a>
-                                        <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-linkedin"></i></a>
-                                        <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-instagram"></i></a>
-                                    </div>
-                                </div>
-                                
-                                <div class="footer-section">
-                                    <h3>Quick Links</h3>
-                                    <ul class="footer-links">
-                                        <li><a href="#" data-route="home">Home</a></li>
-                                        <li><a href="#" data-route="about">About Us</a></li>
-                                        <li><a href="#" data-route="services">Services</a></li>
-                                        <li><a href="#" data-route="technologies">Technologies</a></li>
-                                        <li><a href="#" data-route="portfolio">Portfolio</a></li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="footer-section">
-                                    <h3>Services</h3>
-                                    <ul class="footer-links">
-                                        <li><a href="#" data-route="services">Website Development</a></li>
-                                        <li><a href="#" data-route="services">E-commerce Solutions</a></li>
-                                        <li><a href="#" data-route="services">Inventory Management</a></li>
-                                        <li><a href="#" data-route="services">POS Systems</a></li>
-                                        <li><a href="#" data-route="services">CRM Solutions</a></li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="footer-section">
-                                    <h3>Newsletter</h3>
-                                    <p style="color: #d1d5db; margin-bottom: 15px;">
-                                        Subscribe to our newsletter for updates on new technologies and offers.
-                                    </p>
-                                    <form class="newsletter-form" id="newsletterForm">
-                                        <input type="email" class="newsletter-input" placeholder="Your email" required>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                            
-                            <div class="copyright">
-                                <p>&copy; ${new Date().getFullYear()} Indiz Software Solution. All rights reserved.</p>
-                                <p style="margin-top: 10px;">Contact: +91 7526018014 | Email: indizsoftwaresolution@gmail.com</p>
-                            </div>
-                        </div>
-                    </footer>
-                `;
-            }
-
-            mounted() {
-                const form = document.getElementById('newsletterForm');
-                if (form) {
-                    form.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        const email = form.querySelector('.newsletter-input').value;
-                        
-                        // Save to localStorage
-                        const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
-                        subscribers.push({ email, date: new Date().toISOString() });
-                        localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
-
-                        // Show success message
-                        new Toast({
-                            title: 'Subscribed!',
-                            message: 'Thank you for subscribing to our newsletter.',
-                            type: 'success'
-                        }).show();
-
-                        form.reset();
-                    });
-                }
-            }
-        }
-
-        // Modal Component
-        class Modal extends Component {
-            constructor(props) {
-                super(props);
-                this.state = { isOpen: false };
-            }
-
-            show() {
-                this.setState({ isOpen: true });
-                document.body.style.overflow = 'hidden';
-            }
-
-            hide() {
-                this.setState({ isOpen: false });
-                document.body.style.overflow = '';
-            }
-
-            render() {
-                if (!this.state.isOpen) return '';
-
-                return `
-                    <div class="modal-overlay" id="modalOverlay">
-                        <div class="modal">
-                            <div class="modal-header">
-                                <h3>${this.props.title}</h3>
-                                <button class="modal-close" id="modalClose">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                ${this.props.content}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            mounted() {
-                const overlay = document.getElementById('modalOverlay');
-                const closeBtn = document.getElementById('modalClose');
-
-                if (overlay) {
-                    overlay.addEventListener('click', (e) => {
-                        if (e.target === overlay) {
-                            this.hide();
-                        }
-                    });
+                if (Object.keys(errors).length > 0) {
+                    this.setState({ errors });
+                    this.showToast('Please fix the errors in the form', 'error');
+                    return;
                 }
 
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', () => this.hide());
-                }
+                // Show loading
+                this.showLoading();
 
-                // Handle route buttons inside modal
-                document.querySelectorAll('[data-route]').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        this.hide();
-                        const route = btn.getAttribute('data-route');
-                        if (route && router) {
-                            router.navigate(route);
-                        }
-                    });
-                });
-            }
-        }
-
-        // Toast Component
-        class Toast extends Component {
-            constructor(props) {
-                super(props);
-                this.state = { isVisible: false };
-            }
-
-            show() {
-                this.setState({ isVisible: true });
+                // Simulate API call
                 setTimeout(() => {
-                    this.setState({ isVisible: false });
-                }, 3000);
+                    // Save submission
+                    const submission = {
+                        ...this.state.formData,
+                        date: new Date().toISOString(),
+                        id: Date.now()
+                    };
+
+                    AppState.contactSubmissions.push(submission);
+                    this.router.saveData();
+
+                    // Hide loading
+                    this.hideLoading();
+
+                    // Show success message
+                    this.showToast('Your message has been sent successfully! We will contact you soon.', 'success');
+
+                    // Reset form
+                    this.setState({
+                        formData: {
+                            name: '',
+                            email: '',
+                            phone: '',
+                            service: '',
+                            message: ''
+                        },
+                        errors: {}
+                    });
+                }, 1500);
             }
 
-            render() {
-                if (!this.state.isVisible) return '';
-
-                return `
-                    <div class="toast toast-${this.props.type}">
-                        <div class="toast-icon">
-                            <i class="fas fa-${this.props.type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                        </div>
-                        <div class="toast-content">
-                            <h4>${this.props.title}</h4>
-                            <p>${this.props.message}</p>
-                        </div>
-                    </div>
-                `;
-            }
-
-            mounted() {
-                const toastContainer = document.querySelector('.toast-container');
-                if (!toastContainer) {
-                    const container = document.createElement('div');
-                    container.className = 'toast-container';
-                    document.body.appendChild(container);
-                }
-                
-                const container = document.querySelector('.toast-container');
-                const toastElement = container.querySelector('.toast:last-child');
-                
-                // Remove toast after animation
-                setTimeout(() => {
-                    if (toastElement) {
-                        toastElement.style.animation = 'slideOutRight 0.3s ease';
-                        setTimeout(() => {
-                            if (toastElement.parentNode) {
-                                toastElement.parentNode.removeChild(toastElement);
-                            }
-                        }, 300);
-                    }
-                }, 2700);
+            validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
             }
         }
 
-        // Initialize the Application
-        const router = new AppRouter();
+        // ============================================
+        // INITIALIZE APPLICATION
+        // ============================================
 
-        // Register Routes
-        router.addRoute('/', new HomePage());
-        router.addRoute('home', new HomePage());
-        router.addRoute('about', new AboutPage());
-        router.addRoute('services', new ServicesPage());
-        router.addRoute('technologies', new TechnologiesPage());
-        router.addRoute('portfolio', new PortfolioPage());
-        router.addRoute('contact', new ContactPage());
+        // Create router instance
+        const router = new Router();
+
+        // Register all routes
+        router.register('home', new HomePage());
+        router.register('about', new AboutPage());
+        router.register('services', new ServicesPage());
+        router.register('technologies', new TechnologiesPage());
+        router.register('portfolio', new PortfolioPage());
+        router.register('contact', new ContactPage());
+
+        // Make router globally available
+        window.appRouter = router;
 
         // Start the application
-        router.navigate('home');
+        router.render();
     </script>
 </body>
 </html>
