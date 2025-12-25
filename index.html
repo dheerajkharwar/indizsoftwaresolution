@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indiz Software Solution | IT Services & Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .nav-links a.active {
+            color: var(--secondary);
+        }
+        
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 200px);
+        }
+        
+        .page {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.8)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            margin-left: 10px;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        /* Section Styling */
+        .page-content {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 15px auto 0;
+        }
+        
+        /* Services Page */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Technologies Page */
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .tech-item {
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .tech-icon {
+            color: var(--secondary);
+        }
+        
+        /* Portfolio Page */
+        .portfolio-filter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .portfolio-item {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+        
+        .portfolio-img {
+            height: 200px;
+            background-color: #f1f1f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--secondary);
+        }
+        
+        .portfolio-content {
+            padding: 20px;
+        }
+        
+        .portfolio-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        /* About Page */
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat h3 {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        /* Contact Page */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .contact-info {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        
+        .contact-icon {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+        
+        .contact-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .footer-links h4, .footer-newsletter h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-links h4::after, .footer-newsletter h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        
+        .newsletter-form {
+            display: flex;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+        }
+        
+        .newsletter-form button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* Modal for Project Details */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            color: white;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--secondary);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 1200;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background-color: #2ecc71;
+        }
+        
+        .toast.error {
+            background-color: #e74c3c;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .mobile-menu {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+            }
+            
+            .mobile-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .mobile-nav-links {
+                list-style: none;
+            }
+            
+            .mobile-nav-links li {
+                margin-bottom: 15px;
+            }
+            
+            .mobile-nav-links a {
+                text-decoration: none;
+                color: var(--dark);
+                font-size: 1.1rem;
+                display: block;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 0;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .page-content {
+                padding: 60px 0;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .about-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1 id="logoHome">Indiz<span>Software</span></h1>
+            </div>
+            
+            <nav class="desktop-nav">
+                <ul class="nav-links">
+                    <li><a class="nav-link active" data-page="home">Home</a></li>
+                    <li><a class="nav-link" data-page="about">About</a></li>
+                    <li><a class="nav-link" data-page="services">Services</a></li>
+                    <li><a class="nav-link" data-page="technologies">Technologies</a></li>
+                    <li><a class="nav-link" data-page="portfolio">Portfolio</a></li>
+                    <li><a class="nav-link" data-page="contact">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu">
+            <ul class="mobile-nav-links">
+                <li><a class="nav-link" data-page="home">Home</a></li>
+                <li><a class="nav-link" data-page="about">About</a></li>
+                <li><a class="nav-link" data-page="services">Services</a></li>
+                <li><a class="nav-link" data-page="technologies">Technologies</a></li>
+                <li><a class="nav-link" data-page="portfolio">Portfolio</a></li>
+                <li><a class="nav-link" data-page="contact">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <div id="app" class="container">
+            <!-- Content will be dynamically rendered here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Indiz Software Solution</h3>
+                    <p>Delivering innovative software solutions to help businesses thrive in the digital age.</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a class="nav-link" data-page="home">Home</a></li>
+                        <li><a class="nav-link" data-page="about">About Us</a></li>
+                        <li><a class="nav-link" data-page="services">Services</a></li>
+                        <li><a class="nav-link" data-page="portfolio">Portfolio</a></li>
+                        <li><a class="nav-link" data-page="contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Our Services</h4>
+                    <ul>
+                        <li><a class="service-link" data-service="web">Website Development</a></li>
+                        <li><a class="service-link" data-service="ecommerce">E-commerce Solutions</a></li>
+                        <li><a class="service-link" data-service="inventory">Inventory Management</a></li>
+                        <li><a class="service-link" data-service="pos">POS Systems</a></li>
+                        <li><a class="service-link" data-service="crm">CRM Solutions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4>Newsletter</h4>
+                    <p>Subscribe to our newsletter for updates on new technologies and offers.</p>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; <span id="currentYear"></span> Indiz Software Solution. All rights reserved.</p>
+                <p>Contact: +91 7526018014 | Email: indizsoftwaresolution@gmail.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Project Details Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Project Title</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent">
+                    <!-- Project details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Message sent successfully!</span>
+    </div>
+
+    <!-- JavaScript & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Application State
+        const AppState = {
+            currentPage: 'home',
+            portfolioFilter: 'all',
+            contactSubmissions: [],
+            newsletterSubscribers: []
+        };
+
+        // Initialize the application
+        $(document).ready(function() {
+            // Set current year in footer
+            $('#currentYear').text(new Date().getFullYear());
+            
+            // Initialize data from localStorage
+            initializeData();
+            
+            // Render the initial page (Home)
+            renderPage('home');
+            
+            // Navigation event handlers
+            $('.nav-link').on('click', function(e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                navigateTo(page);
+            });
+            
+            // Logo click to go home
+            $('#logoHome').on('click', function() {
+                navigateTo('home');
+            });
+            
+            // Service links in footer
+            $('.service-link').on('click', function(e) {
+                e.preventDefault();
+                const service = $(this).data('service');
+                navigateTo('services');
+                // We could add filtering logic here if needed
+            });
+            
+            // Mobile menu toggle
+            $('.mobile-menu-btn').on('click', function() {
+                $('.mobile-menu').toggleClass('active');
+            });
+            
+            // Newsletter form submission
+            $('#newsletterForm').on('submit', function(e) {
+                e.preventDefault();
+                const email = $(this).find('input[type="email"]').val();
+                saveNewsletterEmail(email);
+                showToast('Thank you for subscribing to our newsletter!', 'success');
+                $(this).trigger('reset');
+            });
+            
+            // Modal close button
+            $('.close-modal').on('click', function() {
+                $('#projectModal').hide();
+            });
+            
+            // Close modal when clicking outside
+            $(window).on('click', function(e) {
+                if($(e.target).is('#projectModal')) {
+                    $('#projectModal').hide();
+                }
+            });
+        });
+
+        // Navigation function
+        function navigateTo(page) {
+            if (AppState.currentPage === page) return;
+            
+            AppState.currentPage = page;
+            renderPage(page);
+            
+            // Update active nav link
+            $('.nav-link').removeClass('active');
+            $(`.nav-link[data-page="${page}"]`).addClass('active');
+            
+            // Close mobile menu if open
+            $('.mobile-menu').removeClass('active');
+            
+            // Update browser history (optional)
+            history.pushState({ page: page }, '', `#${page}`);
+        }
+
+        // Initialize data from localStorage
+        function initializeData() {
+            const savedContacts = localStorage.getItem('indizContactSubmissions');
+            const savedSubscribers = localStorage.getItem('indizNewsletterSubscribers');
+            
+            if (savedContacts) {
+                AppState.contactSubmissions = JSON.parse(savedContacts);
+            }
+            
+            if (savedSubscribers) {
+                AppState.newsletterSubscribers = JSON.parse(savedSubscribers);
+            }
+        }
+
+        // Save contact submission
+        function saveContactSubmission(data) {
+            AppState.contactSubmissions.push(data);
+            localStorage.setItem('indizContactSubmissions', JSON.stringify(AppState.contactSubmissions));
+        }
+
+        // Save newsletter email
+        function saveNewsletterEmail(email) {
+            AppState.newsletterSubscribers.push({
+                email: email,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('indizNewsletterSubscribers', JSON.stringify(AppState.newsletterSubscribers));
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = $('#toast');
+            $('#toastMessage').text(message);
+            toast.removeClass('success error').addClass(type);
+            toast.addClass('show');
+            
+            setTimeout(() => {
+                toast.removeClass('show');
+            }, 3000);
+        }
+
+        // Render page based on current state
+        function renderPage(page) {
+            let content = '';
+            
+            switch(page) {
+                case 'home':
+                    content = renderHomePage();
+                    break;
+                case 'about':
+                    content = renderAboutPage();
+                    break;
+                case 'services':
+                    content = renderServicesPage();
+                    break;
+                case 'technologies':
+                    content = renderTechnologiesPage();
+                    break;
+                case 'portfolio':
+                    content = renderPortfolioPage();
+                    break;
+                case 'contact':
+                    content = renderContactPage();
+                    break;
+                default:
+                    content = renderHomePage();
+            }
+            
+            $('#app').html(`<div class="page">${content}</div>`);
+            
+            // Re-attach event handlers for dynamic content
+            attachPageEventHandlers(page);
+        }
+
+        // Render Home Page
+        function renderHomePage() {
+            return `
+                <div class="hero">
+                    <h2>Innovative Software Solutions for Your Business</h2>
+                    <p>We deliver cutting-edge web and software development services that drive growth, enhance productivity, and streamline operations for businesses of all sizes.</p>
+                    <button class="btn" id="contactBtn">Get In Touch</button>
+                    <button class="btn btn-outline" id="portfolioBtn">View Our Work</button>
+                </div>
+                <div class="page-content">
+                    <div class="section-title">
+                        <h2>Why Choose Indiz Software?</h2>
+                        <p>We combine technical expertise with business understanding to deliver solutions that drive real results</p>
+                    </div>
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3>Proven Expertise</h3>
+                            <p>With 5+ years of experience and 50+ successful projects, we have the knowledge to tackle any challenge.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h3>Timely Delivery</h3>
+                            <p>We respect deadlines and deliver projects on time without compromising on quality.</p>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <h3>24/7 Support</h3>
+                            <p>Our dedicated support team is always available to assist you with any issues or questions.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render About Page
+        function renderAboutPage() {
+            return `
+                <div class="page-content">
+                    <div class="section-title">
+                        <h2>About Us</h2>
+                        <p>Learn more about Indiz Software Solution and our expertise in delivering top-notch software solutions</p>
+                    </div>
+                    
+                    <div class="about-content">
+                        <div class="about-text">
+                            <h3>Your Trusted Technology Partner</h3>
+                            <p>Founded by Dheeraj, Indiz Software Solution is a leading software development company specializing in creating custom web applications, e-commerce solutions, inventory management systems, POS software, and CRM platforms.</p>
+                            <p>With extensive experience across multiple industries, we've delivered numerous successful projects that have helped businesses streamline operations, enhance customer experiences, and drive revenue growth.</p>
+                            <p>Our team of skilled developers excels in various technologies including PHP, Java, JavaScript, jQuery, and AJAX, ensuring we can tackle any project with precision and efficiency.</p>
+                            
+                            <div class="about-stats">
+                                <div class="stat">
+                                    <h3>50+</h3>
+                                    <p>Projects Completed</p>
+                                </div>
+                                <div class="stat">
+                                    <h3>5+</h3>
+                                    <p>Years Experience</p>
+                                </div>
+                                <div class="stat">
+                                    <h3>30+</h3>
+                                    <p>Happy Clients</p>
+                                </div>
+                                <div class="stat">
+                                    <h3>10+</h3>
+                                    <p>Technologies</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="about-text">
+                            <h3>Our Mission & Vision</h3>
+                            <p><strong>Mission:</strong> To empower businesses with innovative, reliable, and scalable software solutions that drive growth and operational efficiency.</p>
+                            <p><strong>Vision:</strong> To become the most trusted software development partner for businesses across industries, known for excellence, innovation, and customer satisfaction.</p>
+                            
+                            <h3 style="margin-top: 30px;">Our Values</h3>
+                            <ul style="list-style-type: none; margin-top: 15px;">
+                                <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--secondary); margin-right: 10px;"></i> <strong>Quality First:</strong> We never compromise on the quality of our solutions</li>
+                                <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--secondary); margin-right: 10px;"></i> <strong>Customer-Centric:</strong> Your success is our primary focus</li>
+                                <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--secondary); margin-right: 10px;"></i> <strong>Innovation:</strong> We stay updated with the latest technologies</li>
+                                <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--secondary); margin-right: 10px;"></i> <strong>Transparency:</strong> Clear communication at every stage</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 10px;"></i> <strong>Reliability:</strong> Consistent delivery of what we promise</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Services Page
+        function renderServicesPage() {
+            return `
+                <div class="page-content">
+                    <div class="section-title">
+                        <h2>Our Services</h2>
+                        <p>Comprehensive software solutions tailored to meet your business needs</p>
+                    </div>
+                    
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <h3>Website Development</h3>
+                            <p>Custom website development with responsive design, SEO optimization, and user-friendly interfaces that work across all devices.</p>
+                            <ul style="text-align: left; margin-top: 15px; list-style-type: none;">
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Corporate Websites</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Landing Pages</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Web Portals</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h3>E-commerce Solutions</h3>
+                            <p>Complete e-commerce platforms with secure payment gateways, inventory management, and customer relationship features.</p>
+                            <ul style="text-align: left; margin-top: 15px; list-style-type: none;">
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> B2C & B2B Platforms</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Multi-vendor Marketplaces</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Payment Integration</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <h3>Inventory Management</h3>
+                            <p>Efficient inventory tracking systems with real-time updates, stock alerts, and reporting capabilities.</p>
+                            <ul style="text-align: left; margin-top: 15px; list-style-type: none;">
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Stock Tracking</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Warehouse Management</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Supplier Management</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-cash-register"></i>
+                            </div>
+                            <h3>Point of Sale (POS)</h3>
+                            <p>Robust POS systems for retail and restaurant businesses with sales tracking, reporting, and customer management.</p>
+                            <ul style="text-align: left; margin-top: 15px; list-style-type: none;">
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Retail POS</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Restaurant POS</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Sales Analytics</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3>CRM Systems</h3>
+                            <p>Customer Relationship Management systems to track interactions, manage leads, and improve customer service.</p>
+                            <ul style="text-align: left; margin-top: 15px; list-style-type: none;">
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Lead Management</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Customer Support</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Sales Pipeline</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="service-card">
+                            <div class="service-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h3>Custom Applications</h3>
+                            <p>Tailored software applications designed to address specific business challenges and streamline operations.</p>
+                            <ul style="text-align: left; margin-top: 15px; list-style-type: none;">
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Business Automation</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Workflow Management</li>
+                                <li><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Custom Integrations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Technologies Page
+        function renderTechnologiesPage() {
+            return `
+                <div class="page-content">
+                    <div class="section-title">
+                        <h2>Technologies We Use</h2>
+                        <p>We leverage the latest technologies to build robust and scalable software solutions</p>
+                    </div>
+                    
+                    <div class="tech-list">
+                        <div class="tech-item">
+                            <i class="fab fa-php tech-icon"></i>
+                            <span>PHP</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-java tech-icon"></i>
+                            <span>Java</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-js-square tech-icon"></i>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-code tech-icon"></i>
+                            <span>jQuery</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-sync-alt tech-icon"></i>
+                            <span>AJAX</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-html5 tech-icon"></i>
+                            <span>HTML5</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-css3-alt tech-icon"></i>
+                            <span>CSS3</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-database tech-icon"></i>
+                            <span>MySQL</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-react tech-icon"></i>
+                            <span>React</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-node-js tech-icon"></i>
+                            <span>Node.js</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-python tech-icon"></i>
+                            <span>Python</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-laravel tech-icon"></i>
+                            <span>Laravel</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-angular tech-icon"></i>
+                            <span>Angular</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-vuejs tech-icon"></i>
+                            <span>Vue.js</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-bootstrap tech-icon"></i>
+                            <span>Bootstrap</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 60px;">
+                        <div class="section-title">
+                            <h2>Our Development Process</h2>
+                            <p>A systematic approach to ensure quality and timely delivery</p>
+                        </div>
+                        
+                        <div class="services-grid" style="margin-top: 30px;">
+                            <div class="service-card">
+                                <div class="service-icon">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <h3>Requirement Analysis</h3>
+                                <p>Understanding your business needs and defining project scope and objectives.</p>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">
+                                    <i class="fas fa-pencil-ruler"></i>
+                                </div>
+                                <h3>Planning & Design</h3>
+                                <p>Creating detailed project plans, wireframes, and system architecture.</p>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <h3>Development</h3>
+                                <p>Writing clean, efficient code using industry best practices and standards.</p>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">
+                                    <i class="fas fa-vial"></i>
+                                </div>
+                                <h3>Testing & QA</h3>
+                                <p>Rigorous testing to ensure bug-free, secure, and high-performance software.</p>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h3>Deployment</h3>
+                                <p>Seamless deployment to production servers with minimal downtime.</p>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <h3>Maintenance & Support</h3>
+                                <p>Ongoing support, updates, and enhancements post-deployment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Portfolio Page
+        function renderPortfolioPage() {
+            const portfolioData = [
+                {
+                    id: 1,
+                    title: "E-commerce Platform for Retail",
+                    category: "ecommerce",
+                    description: "A fully-featured e-commerce platform with product management, shopping cart, secure payment gateway integration, and admin dashboard.",
+                    technologies: ["PHP", "MySQL", "JavaScript", "jQuery", "Bootstrap"],
+                    features: ["Responsive Design", "Multi-vendor Support", "Inventory Management", "Order Tracking", "Payment Gateway Integration"],
+                    client: "Retail Chain Store",
+                    duration: "3 months",
+                    image: "fas fa-shopping-cart"
+                },
+                {
+                    id: 2,
+                    title: "Restaurant POS System",
+                    category: "pos",
+                    description: "A comprehensive Point of Sale system for restaurants with table management, order tracking, billing, and inventory integration.",
+                    technologies: ["Java", "MySQL", "JavaScript", "jQuery"],
+                    features: ["Table Management", "Order Tracking", "Billing System", "Inventory Integration", "Reports & Analytics"],
+                    client: "Fine Dining Restaurant",
+                    duration: "2.5 months",
+                    image: "fas fa-utensils"
+                },
+                {
+                    id: 3,
+                    title: "Inventory Management System",
+                    category: "inventory",
+                    description: "A cloud-based inventory management solution with real-time tracking, stock alerts, and supplier management.",
+                    technologies: ["PHP", "MySQL", "JavaScript", "AJAX"],
+                    features: ["Real-time Tracking", "Stock Alerts", "Supplier Management", "Barcode Integration", "Reporting Dashboard"],
+                    client: "Wholesale Distributor",
+                    duration: "4 months",
+                    image: "fas fa-boxes"
+                },
+                {
+                    id: 4,
+                    title: "Corporate Website Redesign",
+                    category: "web",
+                    description: "Complete redesign of corporate website with modern UI/UX, responsive design, and improved performance.",
+                    technologies: ["HTML5", "CSS3", "JavaScript", "jQuery", "Bootstrap"],
+                    features: ["Responsive Design", "SEO Optimization", "Fast Loading", "Modern UI/UX", "Contact Management"],
+                    client: "Technology Company",
+                    duration: "1.5 months",
+                    image: "fas fa-globe"
+                },
+                {
+                    id: 5,
+                    title: "CRM for Service Business",
+                    category: "crm",
+                    description: "Custom CRM system for service-based business with lead management, customer tracking, and service scheduling.",
+                    technologies: ["PHP", "MySQL", "JavaScript", "jQuery"],
+                    features: ["Lead Management", "Customer Tracking", "Service Scheduling", "Invoice Generation", "Performance Analytics"],
+                    client: "Service Provider",
+                    duration: "3 months",
+                    image: "fas fa-users"
+                },
+                {
+                    id: 6,
+                    title: "Custom ERP Solution",
+                    category: "custom",
+                    description: "Enterprise Resource Planning system integrating multiple business functions into a unified platform.",
+                    technologies: ["Java", "MySQL", "React", "Node.js"],
+                    features: ["Accounting Module", "HR Management", "Inventory Control", "Sales & Purchase", "Reporting System"],
+                    client: "Manufacturing Company",
+                    duration: "6 months",
+                    image: "fas fa-chart-line"
+                }
+            ];
+
+            let portfolioItemsHTML = '';
+            portfolioData.forEach(item => {
+                portfolioItemsHTML += `
+                    <div class="portfolio-item" data-category="${item.category}" data-id="${item.id}">
+                        <div class="portfolio-img">
+                            <i class="${item.image}"></i>
+                        </div>
+                        <div class="portfolio-content">
+                            <h3>${item.title}</h3>
+                            <p>${item.description.substring(0, 100)}...</p>
+                            <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 5px;">
+                                ${item.technologies.map(tech => `<span style="background: #f1f1f1; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem;">${tech}</span>`).join('')}
+                            </div>
+                            <button class="btn" style="margin-top: 15px; width: 100%;" data-view="${item.id}">View Details</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            return `
+                <div class="page-content">
+                    <div class="section-title">
+                        <h2>Our Portfolio</h2>
+                        <p>Explore some of our recent projects and successful implementations</p>
+                    </div>
+                    
+                    <div class="portfolio-filter">
+                        <button class="filter-btn active" data-filter="all">All Projects</button>
+                        <button class="filter-btn" data-filter="web">Web Development</button>
+                        <button class="filter-btn" data-filter="ecommerce">E-commerce</button>
+                        <button class="filter-btn" data-filter="pos">POS Systems</button>
+                        <button class="filter-btn" data-filter="inventory">Inventory</button>
+                        <button class="filter-btn" data-filter="crm">CRM Solutions</button>
+                        <button class="filter-btn" data-filter="custom">Custom Apps</button>
+                    </div>
+                    
+                    <div class="portfolio-grid">
+                        ${portfolioItemsHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Contact Page
+        function renderContactPage() {
+            return `
+                <div class="page-content">
+                    <div class="section-title">
+                        <h2>Contact Us</h2>
+                        <p>Get in touch with us to discuss your project requirements</p>
+                    </div>
+                    
+                    <div class="contact-container">
+                        <div class="contact-info">
+                            <h3>Get In Touch</h3>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <h4>Contact Person</h4>
+                                    <p>Dheeraj</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h4>Phone Number</h4>
+                                    <p>+91 7526018014</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4>Email Address</h4>
+                                    <p>indizsoftwaresolution@gmail.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <div>
+                                    <h4>Website</h4>
+                                    <p>indizsoftwaresolution.in</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4>Business Hours</h4>
+                                    <p>Monday - Friday: 9:00 AM - 7:00 PM</p>
+                                    <p>Saturday: 10:00 AM - 5:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-form">
+                            <h3>Send Us a Message</h3>
+                            <form id="contactForm">
+                                <div class="form-group">
+                                    <label for="name">Full Name</label>
+                                    <input type="text" id="name" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" class="form-control">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="service">Service Interested In</label>
+                                    <select id="service" class="form-control">
+                                        <option value="">Select a service</option>
+                                        <option value="web-development">Website Development</option>
+                                        <option value="ecommerce">E-commerce Solution</option>
+                                        <option value="inventory">Inventory Management</option>
+                                        <option value="pos">POS System</option>
+                                        <option value="crm">CRM System</option>
+                                        <option value="custom">Custom Application</option>
+                                        <option value="consultation">Consultation</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="message">Project Details</label>
+                                    <textarea id="message" class="form-control" required placeholder="Tell us about your project requirements, timeline, and budget..."></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn" style="width: 100%;">Send Message</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Attach event handlers for dynamic content
+        function attachPageEventHandlers(page) {
+            switch(page) {
+                case 'home':
+                    $('#contactBtn').on('click', function() {
+                        navigateTo('contact');
+                    });
+                    $('#portfolioBtn').on('click', function() {
+                        navigateTo('portfolio');
+                    });
+                    break;
+                    
+                case 'portfolio':
+                    // Portfolio filtering
+                    $('.filter-btn').on('click', function() {
+                        const filter = $(this).data('filter');
+                        
+                        // Update active filter button
+                        $('.filter-btn').removeClass('active');
+                        $(this).addClass('active');
+                        
+                        // Filter portfolio items
+                        if(filter === 'all') {
+                            $('.portfolio-item').show();
+                        } else {
+                            $('.portfolio-item').hide();
+                            $(`.portfolio-item[data-category="${filter}"]`).show();
+                        }
+                    });
+                    
+                    // View project details
+                    $('.portfolio-item button').on('click', function() {
+                        const projectId = $(this).data('view');
+                        showProjectModal(projectId);
+                    });
+                    break;
+                    
+                case 'contact':
+                    // Contact form submission
+                    $('#contactForm').on('submit', function(e) {
+                        e.preventDefault();
+                        
+                        // Get form data
+                        const name = $('#name').val();
+                        const email = $('#email').val();
+                        const phone = $('#phone').val();
+                        const service = $('#service').val();
+                        const message = $('#message').val();
+                        
+                        // Save to localStorage (simulating database)
+                        saveContactSubmission({
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            service: service,
+                            message: message,
+                            date: new Date().toISOString()
+                        });
+                        
+                        // Show success message
+                        showToast('Your message has been sent successfully! We will contact you soon.', 'success');
+                        
+                        // Reset form
+                        $(this).trigger('reset');
+                    });
+                    break;
+            }
+        }
+
+        // Show project details modal
+        function showProjectModal(projectId) {
+            const portfolioData = [
+                {
+                    id: 1,
+                    title: "E-commerce Platform for Retail",
+                    category: "ecommerce",
+                    description: "A fully-featured e-commerce platform with product management, shopping cart, secure payment gateway integration, and admin dashboard.",
+                    technologies: ["PHP", "MySQL", "JavaScript", "jQuery", "Bootstrap"],
+                    features: ["Responsive Design", "Multi-vendor Support", "Inventory Management", "Order Tracking", "Payment Gateway Integration"],
+                    client: "Retail Chain Store",
+                    duration: "3 months",
+                    image: "fas fa-shopping-cart",
+                    fullDescription: "Developed a comprehensive e-commerce solution for a retail chain store with multiple branches. The platform includes a customer-facing online store with product catalog, shopping cart, and secure checkout process. The admin dashboard provides complete control over products, orders, customers, and inventory. Integrated with popular payment gateways and shipping providers for seamless transactions."
+                },
+                {
+                    id: 2,
+                    title: "Restaurant POS System",
+                    category: "pos",
+                    description: "A comprehensive Point of Sale system for restaurants with table management, order tracking, billing, and inventory integration.",
+                    technologies: ["Java", "MySQL", "JavaScript", "jQuery"],
+                    features: ["Table Management", "Order Tracking", "Billing System", "Inventory Integration", "Reports & Analytics"],
+                    client: "Fine Dining Restaurant",
+                    duration: "2.5 months",
+                    image: "fas fa-utensils",
+                    fullDescription: "Custom POS system developed for a fine dining restaurant to streamline operations. The system includes table management with real-time status updates, order tracking from kitchen to service, integrated billing with multiple payment options, and inventory management to track ingredient usage. The system also generates detailed reports for sales analysis and business insights."
+                },
+                {
+                    id: 3,
+                    title: "Inventory Management System",
+                    category: "inventory",
+                    description: "A cloud-based inventory management solution with real-time tracking, stock alerts, and supplier management.",
+                    technologies: ["PHP", "MySQL", "JavaScript", "AJAX"],
+                    features: ["Real-time Tracking", "Stock Alerts", "Supplier Management", "Barcode Integration", "Reporting Dashboard"],
+                    client: "Wholesale Distributor",
+                    duration: "4 months",
+                    image: "fas fa-boxes",
+                    fullDescription: "Cloud-based inventory management system for a wholesale distributor with multiple warehouses. The system provides real-time inventory tracking across all locations, automated stock alerts for low inventory, supplier management with purchase order generation, and barcode integration for efficient stocktaking. The reporting dashboard offers insights into stock movement, turnover rates, and forecasting."
+                },
+                {
+                    id: 4,
+                    title: "Corporate Website Redesign",
+                    category: "web",
+                    description: "Complete redesign of corporate website with modern UI/UX, responsive design, and improved performance.",
+                    technologies: ["HTML5", "CSS3", "JavaScript", "jQuery", "Bootstrap"],
+                    features: ["Responsive Design", "SEO Optimization", "Fast Loading", "Modern UI/UX", "Contact Management"],
+                    client: "Technology Company",
+                    duration: "1.5 months",
+                    image: "fas fa-globe",
+                    fullDescription: "Complete redesign and redevelopment of a corporate website for a technology company. The new website features a modern, responsive design that works seamlessly across all devices. Implemented SEO best practices to improve search engine rankings. The website includes a content management system for easy updates, contact management system, and integration with social media platforms."
+                },
+                {
+                    id: 5,
+                    title: "CRM for Service Business",
+                    category: "crm",
+                    description: "Custom CRM system for service-based business with lead management, customer tracking, and service scheduling.",
+                    technologies: ["PHP", "MySQL", "JavaScript", "jQuery"],
+                    features: ["Lead Management", "Customer Tracking", "Service Scheduling", "Invoice Generation", "Performance Analytics"],
+                    client: "Service Provider",
+                    duration: "3 months",
+                    image: "fas fa-users",
+                    fullDescription: "Custom CRM system developed for a service-based business to manage customer relationships and service operations. The system tracks leads from initial contact through conversion, manages customer information and service history, schedules service appointments, generates invoices, and provides performance analytics for sales and service teams. Integrated with email and SMS for automated communications."
+                },
+                {
+                    id: 6,
+                    title: "Custom ERP Solution",
+                    category: "custom",
+                    description: "Enterprise Resource Planning system integrating multiple business functions into a unified platform.",
+                    technologies: ["Java", "MySQL", "React", "Node.js"],
+                    features: ["Accounting Module", "HR Management", "Inventory Control", "Sales & Purchase", "Reporting System"],
+                    client: "Manufacturing Company",
+                    duration: "6 months",
+                    image: "fas fa-chart-line",
+                    fullDescription: "Comprehensive ERP solution developed for a manufacturing company to integrate all business operations. The system includes modules for accounting and finance, human resources management, inventory control, sales and purchase management, production planning, and quality control. The unified platform eliminates data silos, improves operational efficiency, and provides real-time business insights through comprehensive reporting and analytics."
+                }
+            ];
+
+            const project = portfolioData.find(p => p.id == projectId);
+            if (!project) return;
+
+            $('#modalTitle').text(project.title);
+            $('#modalContent').html(`
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <h4>Project Details</h4>
+                        <p><strong>Client:</strong> ${project.client}</p>
+                        <p><strong>Duration:</strong> ${project.duration}</p>
+                        <p><strong>Category:</strong> ${project.category.toUpperCase()}</p>
+                    </div>
+                    <div style="flex: 2; min-width: 300px;">
+                        <h4>Technologies Used</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                            ${project.technologies.map(tech => `<span style="background: #f1f1f1; padding: 5px 10px; border-radius: 5px;">${tech}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <h4>Project Description</h4>
+                    <p>${project.fullDescription}</p>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <h4>Key Features</h4>
+                    <ul style="list-style-type: none; margin-top: 10px;">
+                        ${project.features.map(feature => `<li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--secondary); margin-right: 10px;"></i> ${feature}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" id="inquireBtn" style="padding: 10px 30px;">Inquire About Similar Project</button>
+                </div>
+            `);
+
+            $('#projectModal').show();
+            
+            // Inquire button in modal
+            $('#inquireBtn').on('click', function() {
+                $('#projectModal').hide();
+                navigateTo('contact');
+                // You could pre-fill the contact form with project type
+            });
+        }
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.page) {
+                navigateTo(event.state.page);
+            }
+        });
+    </script>
+</body>
+</html>
