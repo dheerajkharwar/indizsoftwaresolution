@@ -1,0 +1,12 @@
+# robots.txt - SEO Configuration
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /config/
+Disallow: /logs/
+Disallow: /temp/
+Disallow: /cache/
+
+# Sitemap
+Sitemap: https://www.indizsoftwaresolution.com/sitemap.xml
