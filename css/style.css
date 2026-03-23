@@ -43,11 +43,9 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
-.logo span {
-    font-size: 0.8rem;
-    display: block;
-    color: #64748b;
-    -webkit-text-fill-color: #64748b;
+.logo img {
+    height: 60px;
+    margin-right: 10px;
 }
 
 .nav-links {

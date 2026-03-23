@@ -52,8 +52,7 @@ header("X-XSS-Protection: 1; mode=block");
         <div class="container">
             <div class="nav-content">
                 <a href="index.php" class="logo">
-                    INDIZ SOFTWARE
-                    <span>solution - innovation - impact</span>
+                    <img src="images/logo2.png" alt="<?php echo SITE_NAME; ?> Logo">
                 </a>
 
                 <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
